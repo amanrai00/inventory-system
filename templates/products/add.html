@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Product - Inventory System{% endblock %}
+{% block page_title %}Add Product{% endblock %}
+
+{% block content %}
+<div class="card app-card form-card">
+  <div class="card-header">
+    <h3 class="card-title">New Product</h3>
+    <p class="card-subtitle mb-0">Create a product record with pricing, stock count, and threshold settings.</p>
+  </div>
+  <form method="POST" action="{{ url_for('products.add_product_route') }}">
+    <div class="card-body">
+      <div class="form-group">
+        <label for="name">Product Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ form_data.name }}" required>
+      </div>
+      <div class="form-group">
+        <label for="sku">SKU</label>
+        <input type="text" class="form-control" id="sku" name="sku" value="{{ form_data.sku }}" required>
+      </div>
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input type="number" step="0.01" min="0.01" class="form-control" id="price" name="price" value="{{ form_data.price }}" required>
+      </div>
+      <div class="form-group">
+        <label for="stock_quantity">Stock Quantity</label>
+        <input type="number" min="0" class="form-control" id="stock_quantity" name="stock_quantity" value="{{ form_data.stock_quantity }}" required>
+      </div>
+      <div class="form-group">
+        <label for="minimum_stock_level">Minimum Stock Level</label>
+        <input type="number" min="0" class="form-control" id="minimum_stock_level" name="minimum_stock_level" value="{{ form_data.minimum_stock_level }}" required>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button type="submit" class="btn btn-primary">Add Product</button>
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales History - Inventory System{% endblock %}
+{% block page_title %}Sales History{% endblock %}
+{% block page_actions %}
+<a href="{{ url_for('sales.record') }}" class="btn btn-primary page-action-btn">
+  <i class="fas fa-plus"></i> Record Sale
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card app-card">
+  <div class="card-header product-list-header">
+    <div>
+      <h3 class="card-title">All Sales</h3>
+      <p class="card-subtitle mb-0">Review recorded sales activity in chronological order.</p>
+    </div>
+    <form method="GET" action="{{ url_for('sales.history') }}" class="product-filter-form">
+      <div class="sales-filter-grid">
+        <div class="form-group mb-0">
+          <label for="search" class="product-filter-label">Product</label>
+          <input
+            type="text"
+            class="form-control"
+            id="search"
+            name="search"
+            placeholder="Search product name"
+            value="{{ filters.search }}"
+          >
+        </div>
+        <div class="form-group mb-0">
+          <label for="date_from" class="product-filter-label">From</label>
+          <input type="date" class="form-control" id="date_from" name="date_from" value="{{ filters.date_from }}">
+        </div>
+        <div class="form-group mb-0">
+          <label for="date_to" class="product-filter-label">To</label>
+          <input type="date" class="form-control" id="date_to" name="date_to" value="{{ filters.date_to }}">
+        </div>
+        <div class="product-filter-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search mr-2"></i>Apply
+          </button>
+          <a href="{{ url_for('sales.history') }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-body table-responsive p-0">
+    {% if sales %}
+    <table class="table table-hover text-nowrap app-table">
+      <thead>
+        <tr>
+          <th>Sale ID</th>
+          <th>Product</th>
+          <th>Quantity Sold</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sale in sales %}
+        <tr>
+          <td>{{ sale[0] }}</td>
+          <td>{{ sale[1] }}</td>
+          <td>{{ sale[2] }}</td>
+          <td>{{ sale[3] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="dashboard-empty-state dashboard-empty-state-sm">
+      <i class="fas fa-receipt"></i>
+      <h3>No sales match the current filters</h3>
+      <p>Try a different product search or date range.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

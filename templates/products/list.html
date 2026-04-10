@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - Inventory System{% endblock %}
+{% block page_title %}Products{% endblock %}
+{% block page_actions %}
+<a href="{{ url_for('products.add_product_route') }}" class="btn btn-primary page-action-btn">
+  <i class="fas fa-plus"></i> Add Product
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card app-card">
+  <div class="card-header product-list-header">
+    <div>
+      <h3 class="card-title">All Products</h3>
+      <p class="card-subtitle mb-0">Track stock levels, minimum thresholds, and update inventory records.</p>
+    </div>
+    <form method="GET" action="{{ url_for('products.list_products') }}" class="product-filter-form">
+      <div class="product-filter-grid">
+        <div class="form-group mb-0">
+          <label for="search" class="product-filter-label">Search</label>
+          <input
+            type="text"
+            class="form-control"
+            id="search"
+            name="search"
+            placeholder="Name or SKU"
+            value="{{ filters.search }}"
+          >
+        </div>
+        <div class="form-group mb-0">
+          <label for="status" class="product-filter-label">Status</label>
+          <select class="form-control custom-select" id="status" name="status">
+            <option value="ALL" {% if filters.status == 'ALL' %}selected{% endif %}>All Statuses</option>
+            <option value="NORMAL" {% if filters.status == 'NORMAL' %}selected{% endif %}>Normal</option>
+            <option value="LOW STOCK" {% if filters.status == 'LOW STOCK' %}selected{% endif %}>Low Stock</option>
+            <option value="OUT OF STOCK" {% if filters.status == 'OUT OF STOCK' %}selected{% endif %}>Out Of Stock</option>
+          </select>
+        </div>
+        <div class="product-filter-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search mr-2"></i>Apply
+          </button>
+          <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-body table-responsive p-0">
+    {% if products %}
+    <table class="table table-hover text-nowrap app-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>SKU</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Min Level</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr class="{% if product.status == 'OUT OF STOCK' %}row-critical{% elif product.status == 'LOW STOCK' %}row-warning{% endif %}">
+          <td>{{ product.id }}</td>
+          <td>{{ product.name }}</td>
+          <td><span class="sku-pill">{{ product.sku }}</span></td>
+          <td>${{ "%.2f"|format(product.price) }}</td>
+          <td>{{ product.stock_quantity }}</td>
+          <td>{{ product.minimum_stock_level }}</td>
+          <td>
+            {% if product.status == 'OUT OF STOCK' %}
+              <span class="badge bg-danger">OUT OF STOCK</span>
+            {% elif product.status == 'LOW STOCK' %}
+              <span class="badge bg-warning">LOW STOCK</span>
+            {% else %}
+              <span class="badge bg-success">NORMAL</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('products.edit_product', id=product.id) }}" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-edit"></i> Edit
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="dashboard-empty-state dashboard-empty-state-sm">
+      <i class="fas fa-box-open"></i>
+      <h3>No products match the current filters</h3>
+      <p>Try a different name, SKU, or status filter.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

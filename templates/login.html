@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Inventory System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: #eef2f5;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    .login-box {
+      width: 380px;
+      margin-top: 8%;
+    }
+    .login-logo {
+      font-size: 1.2rem;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 0.9rem;
+    }
+    .login-logo b {
+      font-weight: 700;
+      color: #111827;
+    }
+    .login-logo-mark {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #dbeafe;
+      color: #2563eb;
+      font-size: 0.85rem;
+    }
+    .card {
+      border: 1px solid #d9e2ec;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+    .login-card-body {
+      padding: 1.5rem;
+    }
+    .login-box-msg {
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    .login-badge {
+      display: inline-block;
+      margin-bottom: 0.85rem;
+      padding: 0.28rem 0.55rem;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .form-control {
+      border-radius: 6px;
+      height: 42px;
+      border-color: #cbd5e1;
+    }
+    .form-control:focus {
+      border-color: #5a9bd5;
+      box-shadow: 0 0 0 2px rgba(90,155,213,0.15);
+    }
+    .btn-primary {
+      background: #2f6fdf;
+      border-color: #2563eb;
+      border-radius: 6px;
+      font-weight: 700;
+      min-height: 44px;
+    }
+    .btn-primary:hover {
+      background: #275fc0;
+      border-color: #275fc0;
+    }
+    .company-note {
+      text-align: center;
+      margin-top: 0.85rem;
+      font-size: 0.78rem;
+      color: #7b8794;
+    }
+    .field-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 0.35rem;
+    }
+  </style>
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <span class="login-logo-mark"><i class="fas fa-boxes"></i></span>
+    <span><b>Inventory</b>&nbsp;System</span>
+  </div>
+  <div class="card">
+    <div class="card-body login-card-body">
+      <div class="login-badge">Internal Access</div>
+      <p class="login-box-msg">Sign in with your employee account</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} py-2" style="font-size:0.88rem; border-radius:3px;">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="form-group">
+          <label for="email" class="field-label">Email</label>
+          <input type="email" name="email" id="email" class="form-control" placeholder="you@company.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password" class="field-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+      </form>
+    </div>
+  </div>
+  <p class="company-note">Internal use only &middot; Contact IT for access</p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

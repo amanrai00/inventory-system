@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Inventory System{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-3 col-6">
+    <div class="small-box metric-card metric-card-info">
+      <div class="inner">
+        <h3>{{ total_products }}</h3>
+        <p>Total Products</p>
+      </div>
+      <div class="icon"><i class="fas fa-boxes"></i></div>
+      <a href="{{ url_for('products.list_products') }}" class="small-box-footer">
+        View All <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-6">
+    <div class="small-box metric-card metric-card-warning">
+      <div class="inner">
+        <h3>{{ low_stock_count }}</h3>
+        <p>Low Stock Items</p>
+      </div>
+      <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
+      <a href="{{ url_for('products.list_products') }}" class="small-box-footer">
+        View Details <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-6">
+    <div class="small-box metric-card metric-card-danger">
+      <div class="inner">
+        <h3>{{ out_of_stock_count }}</h3>
+        <p>Out of Stock</p>
+      </div>
+      <div class="icon"><i class="fas fa-times-circle"></i></div>
+      <a href="{{ url_for('products.list_products') }}" class="small-box-footer">
+        View Details <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-6">
+    <div class="small-box metric-card metric-card-success">
+      <div class="inner">
+        <h3>{{ total_sales }}</h3>
+        <p>Total Sales</p>
+      </div>
+      <div class="icon"><i class="fas fa-chart-line"></i></div>
+      <a href="{{ url_for('sales.history') }}" class="small-box-footer">
+        Sales History <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card app-card">
+      <div class="card-body">
+        <div class="section-heading">
+          <div>
+            <p class="section-eyebrow">Operational Snapshot</p>
+            <h3>Inventory health overview</h3>
+          </div>
+        </div>
+        <p class="dashboard-summary mb-0">
+          Review stock risk, sales activity, and product counts from one place. Focus first on low stock and out of stock items.
+        </p>
+        <div class="dashboard-status-list">
+          {% for item in status_breakdown %}
+          <div class="dashboard-status-pill tone-{{ item.tone }}">
+            <span class="dashboard-status-count">{{ item.count }}</span>
+            <span class="dashboard-status-label">{{ item.label }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card app-card quick-actions-card">
+      <div class="card-body">
+        <p class="section-eyebrow">Quick Actions</p>
+        <h3>Common tasks</h3>
+        <div class="quick-action-list">
+          <a href="{{ url_for('products.add_product_route') }}" class="btn btn-primary btn-block">
+            <i class="fas fa-plus-circle mr-2"></i>Add Product
+          </a>
+          <a href="{{ url_for('sales.record') }}" class="btn btn-outline-secondary btn-block">
+            <i class="fas fa-cash-register mr-2"></i>Record Sale
+          </a>
+          <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary btn-block">
+            <i class="fas fa-boxes mr-2"></i>Review Inventory
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    {% if out_of_stock_count > 0 %}
+    <div class="dashboard-callout dashboard-callout-danger">
+      <div>
+        <p class="dashboard-callout-label">Inventory Alert</p>
+        <h3>{{ out_of_stock_count }} item{% if out_of_stock_count != 1 %}s are{% else %} is{% endif %} out of stock</h3>
+      </div>
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-danger">Review Critical Items</a>
+    </div>
+    {% elif low_stock_count > 0 %}
+    <div class="dashboard-callout dashboard-callout-warning">
+      <div>
+        <p class="dashboard-callout-label">Restock Needed</p>
+        <h3>{{ low_stock_count }} item{% if low_stock_count != 1 %}s need{% else %} needs{% endif %} attention</h3>
+      </div>
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary">Open Inventory</a>
+    </div>
+    {% else %}
+    <div class="dashboard-callout dashboard-callout-success">
+      <div>
+        <p class="dashboard-callout-label">Inventory Status</p>
+        <h3>No urgent stock issues right now</h3>
+      </div>
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary">Review Inventory</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-7">
+    <div class="card app-card">
+      <div class="card-header dashboard-card-header">
+        <div>
+          <h3 class="card-title">Low Stock And Out Of Stock</h3>
+          <p class="card-subtitle mb-0">Products that need action now.</p>
+        </div>
+        <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary btn-sm">View Inventory</a>
+      </div>
+      <div class="card-body p-0">
+        {% if critical_items %}
+        <div class="table-responsive">
+          <table class="table app-table app-table-compact mb-0">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Stock</th>
+                <th>Min Level</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in critical_items %}
+              <tr class="{% if item.status == 'OUT OF STOCK' %}row-critical{% else %}row-warning{% endif %}">
+                <td>{{ item.name }}</td>
+                <td><span class="sku-pill">{{ item.sku }}</span></td>
+                <td>{{ item.stock_quantity }}</td>
+                <td>{{ item.minimum_stock_level }}</td>
+                <td>
+                  {% if item.status == 'OUT OF STOCK' %}
+                  <span class="badge bg-danger">OUT OF STOCK</span>
+                  {% else %}
+                  <span class="badge bg-warning">LOW STOCK</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{{ url_for('products.edit_product', id=item.id) }}" class="btn btn-outline-primary btn-sm">Edit</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="dashboard-empty-state">
+          <i class="fas fa-check-circle"></i>
+          <h3>No products need immediate attention</h3>
+          <p>All current stock levels are above their minimum thresholds.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card app-card">
+      <div class="card-header dashboard-card-header">
+        <div>
+          <h3 class="card-title">Recent Sales</h3>
+          <p class="card-subtitle mb-0">Latest recorded sales activity.</p>
+        </div>
+        <a href="{{ url_for('sales.history') }}" class="btn btn-outline-secondary btn-sm">Sales History</a>
+      </div>
+      <div class="card-body p-0">
+        {% if recent_sales %}
+        <div class="dashboard-activity-list">
+          {% for sale in recent_sales %}
+          <div class="dashboard-activity-item">
+            <div>
+              <p class="dashboard-activity-title">{{ sale.product_name }}</p>
+              <p class="dashboard-activity-meta">Sale #{{ sale.id }} • {{ sale.sale_date }}</p>
+            </div>
+            <span class="dashboard-activity-quantity">-{{ sale.quantity_sold }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="dashboard-empty-state dashboard-empty-state-sm">
+          <i class="fas fa-receipt"></i>
+          <h3>No sales recorded yet</h3>
+          <p>Record your first sale to start tracking recent activity here.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
