@@ -111,6 +111,7 @@ Example:
 ```env
 DB_BACKEND=sqlite
 SQLITE_PATH=instance/inventory.db
+FLASK_DEBUG=1
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=inventory_db
@@ -155,6 +156,13 @@ Open in your browser:
 
 ```text
 http://127.0.0.1:5000/login
+```
+
+For production, set:
+
+```env
+FLASK_DEBUG=0
+DB_BACKEND=mysql
 ```
 
 ## Demo Login
@@ -214,5 +222,5 @@ Add screenshots here after pushing the repo:
 ## Notes
 
 - `.env`, local database files, and virtual environments are ignored by git
-- `app.py` currently runs with `debug=True` for local development
+- `FLASK_DEBUG=1` is intended for local development only
 - This project uses a clean Flask blueprint structure suitable for extension and deployment

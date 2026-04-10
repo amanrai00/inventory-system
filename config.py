@@ -7,6 +7,7 @@ load_dotenv()
 class Config:
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
+    DEBUG = os.getenv('FLASK_DEBUG', '1') == '1'
     DB_BACKEND = os.getenv('DB_BACKEND', 'sqlite').lower()
     MYSQL_HOST = os.getenv('DB_HOST', 'localhost')
     MYSQL_PORT = int(os.getenv('DB_PORT', 3306))
