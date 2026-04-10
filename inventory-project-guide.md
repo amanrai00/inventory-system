@@ -1,5 +1,5 @@
 # Internal Inventory Management System — Project Guide
-**Portfolio MVP | Flask + MySQL + AWS EC2 + RDS**
+**Portfolio MVP | Flask + SQLite (default) / MySQL + AWS EC2 + RDS**
 
 ---
 
@@ -13,7 +13,7 @@ A private company inventory system where employees:
 - View dashboard with real-time inventory stats
 - Monitor low stock and out-of-stock items
 
-**Stack:** Python Flask + MySQL (local dev) → EC2 + RDS MySQL (production)  
+**Stack:** Python Flask + SQLite (local dev default) or MySQL → EC2 + RDS MySQL (production)  
 **Frontend:** AdminLTE 3 (Bootstrap admin template via CDN, rendered with Jinja2)  
 **Goal:** Demonstrate backend logic, database design, security practices, and AWS deployment for IT/Cloud portfolio
 
@@ -22,13 +22,9 @@ A private company inventory system where employees:
 ## Database Schema
 
 ```sql
--- Create the database
-CREATE DATABASE IF NOT EXISTS inventory_db;
-USE inventory_db;
-
 -- Users table
 CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
@@ -38,31 +34,27 @@ CREATE TABLE users (
 
 -- Products table
 CREATE TABLE products (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(100) NOT NULL,
   sku VARCHAR(50) UNIQUE NOT NULL,
   price DECIMAL(10,2) NOT NULL,
   stock_quantity INT DEFAULT 0,
   minimum_stock_level INT DEFAULT 10,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Sales table
 CREATE TABLE sales (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   product_id INT NOT NULL,
   quantity_sold INT NOT NULL,
   sale_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
-
--- Insert a default admin user (password: admin123)
--- Generate the hash in Python: werkzeug.security.generate_password_hash('admin123')
--- Then run:
--- INSERT INTO users (name, email, password_hash, role)
--- VALUES ('Admin', 'admin@company.com', '<paste_hash_here>', 'admin');
 ```
+
+> The MySQL schema is in `database/schema.sql` and the SQLite schema is in `database/schema_sqlite.sql`. The `scripts/init_db.py` script handles database initialization and admin user seeding for both backends.
 
 ---
 
@@ -89,8 +81,18 @@ inventory-system/
 ├── app.py                  # Main Flask app entry point (factory pattern)
 ├── config.py               # DB config, secret key (reads from .env)
 ├── .env                    # Environment variables (NEVER commit this)
+├── .env.example            # Example env file for new developers
 ├── .gitignore              # Ignores venv/, .env, __pycache__/
 ├── requirements.txt        # Python dependencies
+├── DESIGN.md               # Design notes
+│
+├── database/
+│   ├── client.py           # Database abstraction layer (SQLite + MySQL)
+│   ├── schema.sql          # MySQL schema
+│   └── schema_sqlite.sql   # SQLite schema
+│
+├── scripts/
+│   └── init_db.py          # Database initialization + admin user seeding
 │
 ├── models/
 │   ├── __init__.py
@@ -129,6 +131,8 @@ inventory-system/
 ## Environment Variables (.env)
 
 ```
+DB_BACKEND=sqlite
+SQLITE_PATH=instance/inventory.db
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=inventory_db
@@ -137,7 +141,8 @@ DB_PASSWORD=your_password
 SECRET_KEY=your_secret_key_here
 ```
 
-> **Local dev:** `DB_HOST=localhost`  
+> **Default:** `DB_BACKEND=sqlite` uses a local SQLite file — no MySQL setup required.  
+> **MySQL:** Set `DB_BACKEND=mysql` and configure the `DB_*` variables.  
 > **Production:** `DB_HOST=your-rds-endpoint.amazonaws.com`
 
 ---
@@ -171,8 +176,8 @@ POST /sales/record                  → Save sale + reduce stock (protected)
 
 | Step | Task | Details |
 |------|------|---------|
-| 1 | Install MySQL locally | Create `inventory_db` database and run schema SQL |
-| 2 | Flask project setup | Virtual environment, install packages, configure `.env` |
+| 1 | Project setup | Virtual environment, install packages, configure `.env` |
+| 2 | Database setup | Run `scripts/init_db.py` (SQLite default, MySQL optional) |
 | 3 | Auth system | Login, session management, logout, `@login_required` decorator |
 | 4 | Products CRUD | Add, list, edit, update stock, minimum stock levels |
 | 5 | Sales system | Record sale, auto-reduce stock, validate quantity, view history |
@@ -190,7 +195,7 @@ POST /sales/record                  → Save sale + reduce stock (protected)
 | 10 | Security Groups | Configure inbound rules (SSH, HTTP, Flask dev port) |
 | 11 | Launch RDS MySQL | Free tier, private subnet, not publicly accessible |
 | 12 | Configure EC2 | SSH in, install Python, Flask, MySQL client, upload project |
-| 13 | Set production .env | Point `DB_HOST` to RDS endpoint URL |
+| 13 | Set production .env | Set `DB_BACKEND=mysql`, point `DB_HOST` to RDS endpoint |
 | 14 | Run and test | Start Flask app, verify in browser via EC2 public IP |
 
 ---
@@ -239,21 +244,21 @@ POST /sales/record                  → Save sale + reduce stock (protected)
 ## Python Dependencies
 
 ```
-Flask==3.0.0
+Flask==2.3.3
 Flask-MySQLdb==1.0.1
-Werkzeug==3.0.1
+Werkzeug==2.3.8
 python-dotenv==1.0.0
-mysqlclient
+mysqlclient==2.2.0
 ```
 
-> `mysqlclient` is the underlying MySQL driver required by Flask-MySQLdb.
+> `mysqlclient` is the underlying MySQL driver required by Flask-MySQLdb — needed if someone switches to `DB_BACKEND=mysql`.
 
 ---
 
 ## Interview Talking Points
 
 **Architecture:**
-> "I built a Flask app using the application factory pattern with Blueprints for modular routing. It connects to an RDS MySQL instance in a private subnet — the database is never publicly accessible."
+> "I built a Flask app using the application factory pattern with Blueprints for modular routing. It supports both SQLite for local development and MySQL for production. The production setup connects to an RDS MySQL instance in a private subnet — the database is never publicly accessible."
 
 **Security:**
 > "All credentials are managed through environment variables. Passwords are hashed using PBKDF2 via Werkzeug. Every route is protected with a custom login_required decorator, and the RDS security group only accepts traffic from the EC2 instance."
@@ -285,20 +290,25 @@ mysqlclient
 
 ## Current Status Tracker
 
-- [ ] MySQL installed locally
-- [ ] Database + tables created
-- [ ] Flask project structure created
-- [ ] .env configured
-- [ ] Auth working (login/logout/session)
-- [ ] Products CRUD working
-- [ ] Sales + stock logic working
-- [ ] Dashboard working
-- [ ] AdminLTE template wired to all pages
-- [ ] All routes tested
+- [x] Flask project structure created
+- [x] .env configured
+- [x] Auth working (login/logout/session)
+- [x] Products CRUD working
+- [x] Sales + stock logic working
+- [x] Dashboard working
+- [x] AdminLTE template wired to all pages
+- [x] Product search/filter
+- [x] Sales history filtering
+- [x] Server-side validation
+- [x] SQLite support for local development
+- [x] Database abstraction layer (SQLite + MySQL)
+- [x] Local git initialization
+- [ ] GitHub publishing
+- [ ] README screenshots
+- [ ] Automated tests
 - [ ] EC2 launched
 - [ ] RDS launched
 - [ ] App deployed and live
-- [ ] GitHub repo published
 - [ ] Added to resume + LinkedIn
 
 ---
