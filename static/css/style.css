@@ -72,10 +72,14 @@ body {
 }
 
 .brand-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
   color: #f8fafc;
   font-size: 1rem;
   letter-spacing: -0.02em;
   font-weight: 600;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .app-sidebar .nav-sidebar > .nav-item {
@@ -87,11 +91,20 @@ body {
   border-radius: 6px;
   color: var(--sidebar-text);
   font-weight: 500;
+  overflow: hidden;
 }
 
 .app-sidebar .nav-sidebar .nav-link p,
 .app-sidebar .nav-sidebar .nav-link .nav-icon {
   color: inherit;
+}
+
+.app-sidebar .nav-sidebar .nav-link p {
+  margin-bottom: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .app-sidebar .nav-sidebar .nav-link:hover {
@@ -100,6 +113,13 @@ body {
 
 .app-sidebar .nav-sidebar .nav-link.active {
   background: var(--sidebar-accent);
+}
+
+body.sidebar-mini.sidebar-collapse .brand-text,
+body.sidebar-mini.sidebar-collapse .app-sidebar .nav-sidebar .nav-link p {
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
 }
 
 .app-content-header {
