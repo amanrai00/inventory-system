@@ -31,10 +31,10 @@ def login():
             flash('Database connection failed. Check your MySQL settings in .env.', 'danger')
             return render_template('login.html'), 500
 
-        if user and verify_password(user[3], password):
-            session['user_id'] = user[0]
-            session['user_name'] = user[1]
-            session['user_role'] = user[4]
+        if user and verify_password(user['password_hash'], password):
+            session['user_id'] = user['id']
+            session['user_name'] = user['name']
+            session['user_role'] = user['role']
             flash('Login successful!', 'success')
             return redirect(url_for('dashboard.dashboard'))
         else:

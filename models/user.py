@@ -12,13 +12,48 @@ def create_user(mysql, name, email, password, role='employee'):
     cur.close()
 
 
-def get_user_by_email(mysql, email):
+def _get_user_columns(mysql):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM users WHERE email = %s", (email,))
-    user = cur.fetchone()
-    cur.close()
-    return user
+    try:
+        try:
+            cur.execute("SHOW COLUMNS FROM users")
+            rows = cur.fetchall()
+            return [row[0] for row in rows]
+        except Exception:
+            cur.execute("PRAGMA table_info(users)")
+            rows = cur.fetchall()
+            return [row[1] for row in rows]
+    finally:
+        cur.close()
+
+
+def get_user_by_email(mysql, email):
+    columns = _get_user_columns(mysql)
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute("SELECT * FROM users WHERE email = %s", (email,))
+        row = cur.fetchone()
+    finally:
+        cur.close()
+
+    if not row:
+        return None
+
+    record = dict(zip(columns, row))
+    return {
+        'id': record.get('id'),
+        'name': record.get('name') or record.get('email', ''),
+        'email': record.get('email'),
+        'password_hash': record.get('password_hash') or record.get('password'),
+        'role': record.get('role', 'admin'),
+    }
 
 
 def verify_password(stored_hash, password):
-    return check_password_hash(stored_hash, password)
+    if not stored_hash:
+        return False
+
+    if stored_hash.startswith(("pbkdf2:", "scrypt:")):
+        return check_password_hash(stored_hash, password)
+
+    return stored_hash == password
