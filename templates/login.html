@@ -70,9 +70,22 @@
       height: 42px;
       border-color: #cbd5e1;
     }
+    .form-control.is-invalid {
+      border-color: #dc2626;
+      border-width: 0 0 2px 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding-left: 0;
+      padding-right: 0;
+      background-image: none;
+    }
     .form-control:focus {
       border-color: #5a9bd5;
       box-shadow: 0 0 0 2px rgba(90,155,213,0.15);
+    }
+    .form-control.is-invalid:focus {
+      border-color: #dc2626;
+      box-shadow: 0 2px 0 0 rgba(220, 38, 38, 0.12);
     }
     .btn-primary {
       background: #2f6fdf;
@@ -97,6 +110,27 @@
       color: #475569;
       margin-bottom: 0.35rem;
     }
+    .field-error {
+      display: block;
+      margin-top: 0.45rem;
+      color: #dc2626;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+    .field-error i,
+    .top-error i {
+      margin-right: 0.35rem;
+    }
+    .top-error {
+      margin-bottom: 1rem;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      background: #fef2f2;
+      color: #991b1b;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body class="hold-transition login-page">
@@ -110,6 +144,12 @@
       <div class="login-badge">Internal Access</div>
       <p class="login-box-msg">Sign in with your employee account</p>
 
+      {% if general_error %}
+        <div class="top-error">
+          <i class="fas fa-circle"></i>{{ general_error }}
+        </div>
+      {% endif %}
+
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
@@ -118,14 +158,33 @@
         {% endif %}
       {% endwith %}
 
-      <form method="POST" action="{{ url_for('auth.login') }}">
+      <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
         <div class="form-group">
           <label for="email" class="field-label">Email</label>
-          <input type="email" name="email" id="email" class="form-control" placeholder="you@company.com" required>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="form-control{% if field_errors and field_errors.get('email') %} is-invalid{% endif %}"
+            placeholder="you@company.com"
+            value="{{ form_data.email if form_data else '' }}"
+          >
+          {% if field_errors and field_errors.get('email') %}
+            <div class="field-error"><i class="fas fa-circle"></i>{{ field_errors.get('email') }}</div>
+          {% endif %}
         </div>
         <div class="form-group">
           <label for="password" class="field-label">Password</label>
-          <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            class="form-control{% if field_errors and field_errors.get('password') %} is-invalid{% endif %}"
+            placeholder="Enter password"
+          >
+          {% if field_errors and field_errors.get('password') %}
+            <div class="field-error"><i class="fas fa-circle"></i>{{ field_errors.get('password') }}</div>
+          {% endif %}
         </div>
         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
       </form>
