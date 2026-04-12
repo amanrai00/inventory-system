@@ -51,7 +51,7 @@ def _validate_product_form(mysql, form_data, current_product_id=None):
     try:
         minimum_stock_level = int(form_data['minimum_stock_level'])
         if minimum_stock_level < 0:
-            errors.append('Minimum stock level cannot be negative.')
+            errors.append('Minimum stock must be 0 or more.')
     except (TypeError, ValueError):
         errors.append('Minimum stock level must be a whole number.')
         minimum_stock_level = None

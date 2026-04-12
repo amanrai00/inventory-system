@@ -9,20 +9,22 @@
     <h3 class="card-title">New Sale</h3>
     <p class="card-subtitle mb-0">Record a sale and reduce stock accurately for the selected product.</p>
   </div>
-  <form method="POST" action="{{ url_for('sales.record') }}">
+  <form method="POST" action="{{ url_for('sales.record') }}" data-custom-validation novalidate>
     <div class="card-body">
       <div class="form-group">
         <label for="product_id">Product</label>
-        <select class="form-control" id="product_id" name="product_id" required>
+        <select class="form-control" id="product_id" name="product_id" required data-required-message="Product is required">
           <option value="">-- Select Product --</option>
           {% for product in products %}
             <option value="{{ product[0] }}" {% if request.form.get('product_id') == product[0]|string %}selected{% endif %}>{{ product[1] }} (Stock: {{ product[4] }})</option>
           {% endfor %}
         </select>
+        <div class="invalid-feedback"></div>
       </div>
       <div class="form-group">
         <label for="quantity_sold">Quantity</label>
-        <input type="number" class="form-control" id="quantity_sold" name="quantity_sold" min="1" value="{{ request.form.get('quantity_sold', '') }}" required>
+        <input type="number" class="form-control" id="quantity_sold" name="quantity_sold" min="1" value="{{ request.form.get('quantity_sold', '') }}" required data-required-message="Quantity is required" data-range-message="Quantity sold must be at least 1">
+        <div class="invalid-feedback"></div>
       </div>
     </div>
     <div class="card-footer">

@@ -547,6 +547,33 @@ body.sidebar-mini.sidebar-collapse .app-sidebar .nav-sidebar .nav-link p {
   box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
 }
 
+.form-control.is-invalid,
+.custom-select.is-invalid {
+  border-color: #dc2626;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: none;
+}
+
+.form-control.is-invalid:focus,
+.custom-select.is-invalid:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.12);
+}
+
+.form-group .invalid-feedback {
+  display: none;
+  margin-top: 0.4rem;
+  color: #dc2626;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.form-control.is-invalid + .invalid-feedback,
+.custom-select.is-invalid + .invalid-feedback {
+  display: block;
+}
+
 .btn {
   border-radius: 6px;
   font-weight: 600;
