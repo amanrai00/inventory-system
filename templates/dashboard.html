@@ -223,4 +223,40 @@
     </div>
   </div>
 </div>
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-robot mr-2"></i>AI Restock Recommendations</h3>
+        <p class="card-subtitle mb-0">Powered by Amazon Bedrock. Updated daily via cron.</p>
+      </div>
+      <div class="card-body p-0">
+        {% if ai_predictions %}
+        <table class="table table-striped mb-0">
+          <thead>
+            <tr>
+              <th>Product</th><th>SKU</th><th>Current Stock</th><th>Restock Qty</th><th>Reasoning</th><th>Predicted At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in ai_predictions %}
+            <tr>
+              <td>{{ p.name }}</td>
+              <td><code>{{ p.sku }}</code></td>
+              <td>{% if p.stock_quantity == 0 %}<span class="badge badge-danger">Out of Stock</span>{% else %}<span class="badge badge-warning">{{ p.stock_quantity }}</span>{% endif %}</td>
+              <td><strong>{{ p.recommended_restock_qty }}</strong></td>
+              <td><small>{{ p.reasoning }}</small></td>
+              <td><small>{{ p.predicted_at }}</small></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="p-4 text-center text-muted"><p>No predictions yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

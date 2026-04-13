@@ -31,7 +31,7 @@ def dashboard():
         "SELECT id, name, sku, stock_quantity, minimum_stock_level "
         "FROM products "
         "WHERE stock_quantity <= minimum_stock_level "
-        "ORDER BY stock_quantity ASC, minimum_stock_level DESC, name ASC "
+        "ORDER BY stock_quantity ASC "
         "LIMIT 5"
     )
     critical_items = []
@@ -62,6 +62,29 @@ def dashboard():
             'sale_date': row[3],
         })
 
+    # AI demand predictions
+    cur.execute(
+        "SELECT p.id, p.name, p.sku, p.stock_quantity, p.minimum_stock_level, "
+        "pr.recommended_restock_qty, pr.reasoning, pr.predicted_at "
+        "FROM predictions pr "
+        "JOIN products p ON p.id = pr.product_id "
+        "WHERE pr.id IN (SELECT MAX(id) FROM predictions GROUP BY product_id) "
+        "ORDER BY pr.predicted_at DESC "
+        "LIMIT 10"
+    )
+    ai_predictions = []
+    for row in cur.fetchall():
+        ai_predictions.append({
+            'id': row[0],
+            'name': row[1],
+            'sku': row[2],
+            'stock_quantity': row[3],
+            'minimum_stock_level': row[4],
+            'recommended_restock_qty': row[5],
+            'reasoning': row[6],
+            'predicted_at': row[7],
+        })
+
     cur.close()
 
     status_breakdown = [
@@ -77,4 +100,5 @@ def dashboard():
                            total_sales=total_sales,
                            critical_items=critical_items,
                            recent_sales=recent_sales,
-                           status_breakdown=status_breakdown)
+                           status_breakdown=status_breakdown,
+                           ai_predictions=ai_predictions)
