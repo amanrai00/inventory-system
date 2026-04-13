@@ -30,6 +30,11 @@
 
     if (feedback) {
       feedback.textContent = message;
+      if (message) {
+        feedback.classList.remove('hidden');
+      } else {
+        feedback.classList.add('hidden');
+      }
     }
   }
 

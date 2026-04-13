@@ -1,262 +1,243 @@
 {% extends 'base.html' %}
 
 {% block title %}Dashboard - Inventory System{% endblock %}
+{% block page_eyebrow %}Overview{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
 
+{% block page_actions %}
+<a href="{{ url_for('products.add_product_route') }}" class="btn-primary">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+  Add Product
+</a>
+<a href="{{ url_for('sales.record') }}" class="btn-secondary">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+  Record Sale
+</a>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-  <div class="col-lg-3 col-6">
-    <div class="small-box metric-card metric-card-info">
-      <div class="inner">
-        <h3>{{ total_products }}</h3>
-        <p>Total Products</p>
+
+<!-- Metric cards -->
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 mb-5">
+  <a href="{{ url_for('products.list_products') }}" class="surface-panel metric-card rounded-2xl p-5">
+    <div class="flex items-start justify-between gap-3">
+      <div class="metric-icon bg-teal-50 text-teal-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
       </div>
-      <div class="icon"><i class="fas fa-boxes"></i></div>
-      <a href="{{ url_for('products.list_products') }}" class="small-box-footer">
-        View All <i class="fas fa-arrow-circle-right"></i>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Products</span>
+    </div>
+    <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ total_products }}</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700">Total Products</p>
+  </a>
+
+  <a href="{{ url_for('products.list_products') }}?status=LOW+STOCK" class="surface-panel metric-card rounded-2xl p-5">
+    <div class="flex items-start justify-between gap-3">
+      <div class="metric-icon bg-amber-50 text-amber-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      </div>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Watch</span>
+    </div>
+    <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ low_stock_count }}</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700">Low Stock</p>
+  </a>
+
+  <a href="{{ url_for('products.list_products') }}?status=OUT+OF+STOCK" class="surface-panel metric-card rounded-2xl p-5">
+    <div class="flex items-start justify-between gap-3">
+      <div class="metric-icon bg-red-50 text-red-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+      </div>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Critical</span>
+    </div>
+    <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ out_of_stock_count }}</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700">Out of Stock</p>
+  </a>
+
+  <a href="{{ url_for('sales.history') }}" class="surface-panel metric-card rounded-2xl p-5">
+    <div class="flex items-start justify-between gap-3">
+      <div class="metric-icon bg-slate-100 text-slate-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      </div>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Sales</span>
+    </div>
+    <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ total_sales }}</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700">Total Sales</p>
+  </a>
+</div>
+
+<!-- Alert banner -->
+{% if out_of_stock_count > 0 %}
+<div class="mb-5 flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <p class="text-sm font-bold text-red-900">{{ out_of_stock_count }} item{% if out_of_stock_count != 1 %}s{% endif %} out of stock</p>
+    <p class="mt-0.5 text-sm text-red-700">These need restocking before they can be sold.</p>
+  </div>
+  <a href="{{ url_for('products.list_products') }}?status=OUT+OF+STOCK" class="btn-secondary shrink-0 border-red-200 bg-white text-red-800 hover:bg-red-50 cursor-pointer">Review</a>
+</div>
+{% elif low_stock_count > 0 %}
+<div class="mb-5 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <p class="text-sm font-bold text-amber-900">{{ low_stock_count }} item{% if low_stock_count != 1 %}s{% endif %} running low</p>
+    <p class="mt-0.5 text-sm text-amber-700">Consider restocking soon to avoid going out of stock.</p>
+  </div>
+  <a href="{{ url_for('products.list_products') }}?status=LOW+STOCK" class="btn-secondary shrink-0 border-amber-200 bg-white text-amber-900 hover:bg-amber-50 cursor-pointer">View</a>
+</div>
+{% else %}
+<div class="mb-5 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <p class="text-sm font-bold text-emerald-900">Stock levels are healthy</p>
+    <p class="mt-0.5 text-sm text-emerald-700">All products are above their minimum thresholds.</p>
+  </div>
+  <a href="{{ url_for('products.list_products') }}" class="btn-secondary shrink-0 border-emerald-200 bg-white text-emerald-900 hover:bg-emerald-50 cursor-pointer">View Inventory</a>
+</div>
+{% endif %}
+
+<!-- Middle row -->
+<div class="grid grid-cols-1 gap-4 xl:grid-cols-[1.2fr_0.8fr] mb-4">
+
+  <!-- Stock breakdown -->
+  <div class="surface-panel rounded-2xl p-5 sm:p-6">
+    <div class="flex items-center justify-between gap-3 mb-4">
+      <div>
+        <div class="section-kicker"><p class="eyebrow">Inventory</p></div>
+        <h3 class="mt-1.5 text-lg font-bold text-slate-950">Stock breakdown</h3>
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      {% for item in status_breakdown %}
+      <a href="{{ url_for('products.list_products') }}?status={{ item.label | upper | replace(' ', '+') }}"
+         class="rounded-xl border px-4 py-3 min-w-[100px] cursor-pointer transition-opacity hover:opacity-80
+        {% if item.tone == 'success' %}border-emerald-200 bg-emerald-50
+        {% elif item.tone == 'warning' %}border-amber-200 bg-amber-50
+        {% elif item.tone == 'danger' %}border-red-200 bg-red-50
+        {% else %}border-slate-200 bg-slate-50{% endif %}">
+        <p class="text-2xl font-bold text-slate-950">{{ item.count }}</p>
+        <p class="mt-0.5 text-xs font-semibold
+          {% if item.tone == 'success' %}text-emerald-700
+          {% elif item.tone == 'warning' %}text-amber-700
+          {% elif item.tone == 'danger' %}text-red-700
+          {% else %}text-slate-600{% endif %}">{{ item.label }}</p>
       </a>
+      {% endfor %}
     </div>
   </div>
 
-  <div class="col-lg-3 col-6">
-    <div class="small-box metric-card metric-card-warning">
-      <div class="inner">
-        <h3>{{ low_stock_count }}</h3>
-        <p>Low Stock Items</p>
-      </div>
-      <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
-      <a href="{{ url_for('products.list_products') }}" class="small-box-footer">
-        View Details <i class="fas fa-arrow-circle-right"></i>
+  <!-- Quick actions -->
+  <div class="surface-panel rounded-2xl p-5 sm:p-6">
+    <div class="section-kicker mb-4"><p class="eyebrow">Quick Actions</p></div>
+    <div class="space-y-2.5">
+      <a href="{{ url_for('products.add_product_route') }}" class="btn-primary w-full justify-between cursor-pointer">
+        <span class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Add Product
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
-    </div>
-  </div>
-
-  <div class="col-lg-3 col-6">
-    <div class="small-box metric-card metric-card-danger">
-      <div class="inner">
-        <h3>{{ out_of_stock_count }}</h3>
-        <p>Out of Stock</p>
-      </div>
-      <div class="icon"><i class="fas fa-times-circle"></i></div>
-      <a href="{{ url_for('products.list_products') }}" class="small-box-footer">
-        View Details <i class="fas fa-arrow-circle-right"></i>
+      <a href="{{ url_for('sales.record') }}" class="btn-secondary w-full justify-between cursor-pointer">
+        <span class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Record Sale
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
-    </div>
-  </div>
-
-  <div class="col-lg-3 col-6">
-    <div class="small-box metric-card metric-card-success">
-      <div class="inner">
-        <h3>{{ total_sales }}</h3>
-        <p>Total Sales</p>
-      </div>
-      <div class="icon"><i class="fas fa-chart-line"></i></div>
-      <a href="{{ url_for('sales.history') }}" class="small-box-footer">
-        Sales History <i class="fas fa-arrow-circle-right"></i>
+      <a href="{{ url_for('products.list_products') }}" class="btn-secondary w-full justify-between cursor-pointer">
+        <span class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          View Inventory
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
     </div>
   </div>
 </div>
 
-<div class="row">
-  <div class="col-lg-8">
-    <div class="card app-card">
-      <div class="card-body">
-        <div class="section-heading">
-          <div>
-            <p class="section-eyebrow">Operational Snapshot</p>
-            <h3>Inventory health overview</h3>
-          </div>
-        </div>
-        <p class="dashboard-summary mb-0">
-          Review stock risk, sales activity, and product counts from one place. Focus first on low stock and out of stock items.
-        </p>
-        <div class="dashboard-status-list">
-          {% for item in status_breakdown %}
-          <div class="dashboard-status-pill tone-{{ item.tone }}">
-            <span class="dashboard-status-count">{{ item.count }}</span>
-            <span class="dashboard-status-label">{{ item.label }}</span>
-          </div>
+<!-- Bottom row -->
+<div class="grid grid-cols-1 gap-4 xl:grid-cols-5">
+
+  <!-- Critical items table -->
+  <div class="surface-panel table-shell xl:col-span-3">
+    <div class="flex items-center justify-between gap-3 border-b border-slate-200/60 px-5 py-4">
+      <div>
+        <div class="section-kicker"><p class="eyebrow">Needs Attention</p></div>
+        <h3 class="mt-1.5 text-base font-bold text-slate-950">Low & out of stock</h3>
+      </div>
+      <a href="{{ url_for('products.list_products') }}" class="btn-ghost cursor-pointer">All Products</a>
+    </div>
+
+    {% if critical_items %}
+    <div class="overflow-x-auto">
+      <table class="data-table w-full text-sm">
+        <thead>
+          <tr class="bg-slate-50/70 border-b border-slate-200/60">
+            <th class="px-5 py-3 text-left">Product</th>
+            <th class="px-5 py-3 text-left">SKU</th>
+            <th class="px-5 py-3 text-left">Stock</th>
+            <th class="px-5 py-3 text-left">Min</th>
+            <th class="px-5 py-3 text-left">Status</th>
+            <th class="px-5 py-3 text-left"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200/60">
+          {% for item in critical_items %}
+          <tr class="{% if item.status == 'OUT OF STOCK' %}bg-red-50/40{% else %}bg-amber-50/40{% endif %}">
+            <td class="px-5 py-3 font-semibold text-slate-900">{{ item.name }}</td>
+            <td class="px-5 py-3">
+              <span class="status-pill status-pill-info">{{ item.sku }}</span>
+            </td>
+            <td class="px-5 py-3 font-semibold text-slate-900">{{ item.stock_quantity }}</td>
+            <td class="px-5 py-3 text-slate-500">{{ item.minimum_stock_level }}</td>
+            <td class="px-5 py-3">
+              {% if item.status == 'OUT OF STOCK' %}
+                <span class="status-pill status-pill-danger">Out of Stock</span>
+              {% else %}
+                <span class="status-pill status-pill-warning">Low Stock</span>
+              {% endif %}
+            </td>
+            <td class="px-5 py-3">
+              <a href="{{ url_for('products.edit_product', id=item.id) }}" class="btn-ghost table-action cursor-pointer">Edit</a>
+            </td>
+          </tr>
           {% endfor %}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-4">
-    <div class="card app-card quick-actions-card">
-      <div class="card-body">
-        <p class="section-eyebrow">Quick Actions</p>
-        <h3>Common tasks</h3>
-        <div class="quick-action-list">
-          <a href="{{ url_for('products.add_product_route') }}" class="btn btn-primary btn-block">
-            <i class="fas fa-plus-circle mr-2"></i>Add Product
-          </a>
-          <a href="{{ url_for('sales.record') }}" class="btn btn-outline-secondary btn-block">
-            <i class="fas fa-cash-register mr-2"></i>Record Sale
-          </a>
-          <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary btn-block">
-            <i class="fas fa-boxes mr-2"></i>Review Inventory
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-12">
-    {% if out_of_stock_count > 0 %}
-    <div class="dashboard-callout dashboard-callout-danger">
-      <div>
-        <p class="dashboard-callout-label">Inventory Alert</p>
-        <h3>{{ out_of_stock_count }} item{% if out_of_stock_count != 1 %}s are{% else %} is{% endif %} out of stock</h3>
-      </div>
-      <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-danger">Review Critical Items</a>
-    </div>
-    {% elif low_stock_count > 0 %}
-    <div class="dashboard-callout dashboard-callout-warning">
-      <div>
-        <p class="dashboard-callout-label">Restock Needed</p>
-        <h3>{{ low_stock_count }} item{% if low_stock_count != 1 %}s need{% else %} needs{% endif %} attention</h3>
-      </div>
-      <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary">Open Inventory</a>
+        </tbody>
+      </table>
     </div>
     {% else %}
-    <div class="dashboard-callout dashboard-callout-success">
-      <div>
-        <p class="dashboard-callout-label">Inventory Status</p>
-        <h3>No urgent stock issues right now</h3>
-      </div>
-      <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary">Review Inventory</a>
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+      <p class="mt-3 text-sm font-semibold text-slate-800">Everything looks good.</p>
+      <p class="mt-1 text-sm text-slate-500">No products below their minimum threshold.</p>
     </div>
     {% endif %}
   </div>
-</div>
 
-<div class="row">
-  <div class="col-lg-7">
-    <div class="card app-card">
-      <div class="card-header dashboard-card-header">
-        <div>
-          <h3 class="card-title">Low Stock And Out Of Stock</h3>
-          <p class="card-subtitle mb-0">Products that need action now.</p>
-        </div>
-        <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary btn-sm">View Inventory</a>
+  <!-- Recent sales -->
+  <div class="surface-panel table-shell xl:col-span-2">
+    <div class="flex items-center justify-between gap-3 border-b border-slate-200/60 px-5 py-4">
+      <div>
+        <div class="section-kicker"><p class="eyebrow">Recent</p></div>
+        <h3 class="mt-1.5 text-base font-bold text-slate-950">Latest sales</h3>
       </div>
-      <div class="card-body p-0">
-        {% if critical_items %}
-        <div class="table-responsive">
-          <table class="table app-table app-table-compact mb-0">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>SKU</th>
-                <th>Stock</th>
-                <th>Min Level</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for item in critical_items %}
-              <tr class="{% if item.status == 'OUT OF STOCK' %}row-critical{% else %}row-warning{% endif %}">
-                <td>{{ item.name }}</td>
-                <td><span class="sku-pill">{{ item.sku }}</span></td>
-                <td>{{ item.stock_quantity }}</td>
-                <td>{{ item.minimum_stock_level }}</td>
-                <td>
-                  {% if item.status == 'OUT OF STOCK' %}
-                  <span class="badge bg-danger">OUT OF STOCK</span>
-                  {% else %}
-                  <span class="badge bg-warning">LOW STOCK</span>
-                  {% endif %}
-                </td>
-                <td>
-                  <a href="{{ url_for('products.edit_product', id=item.id) }}" class="btn btn-outline-primary btn-sm">Edit</a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        {% else %}
-        <div class="dashboard-empty-state">
-          <i class="fas fa-check-circle"></i>
-          <h3>No products need immediate attention</h3>
-          <p>All current stock levels are above their minimum thresholds.</p>
-        </div>
-        {% endif %}
-      </div>
+      <a href="{{ url_for('sales.history') }}" class="btn-ghost cursor-pointer">All Sales</a>
     </div>
-  </div>
 
-  <div class="col-lg-5">
-    <div class="card app-card">
-      <div class="card-header dashboard-card-header">
-        <div>
-          <h3 class="card-title">Recent Sales</h3>
-          <p class="card-subtitle mb-0">Latest recorded sales activity.</p>
+    {% if recent_sales %}
+    <div class="divide-y divide-slate-200/60">
+      {% for sale in recent_sales %}
+      <div class="flex items-center justify-between gap-3 px-5 py-3.5">
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-slate-900 truncate">{{ sale.product_name }}</p>
+          <p class="mt-0.5 text-xs text-slate-400">#{{ sale.id }} &middot; {{ sale.sale_date }}</p>
         </div>
-        <a href="{{ url_for('sales.history') }}" class="btn btn-outline-secondary btn-sm">Sales History</a>
+        <span class="status-pill status-pill-info shrink-0">-{{ sale.quantity_sold }}</span>
       </div>
-      <div class="card-body p-0">
-        {% if recent_sales %}
-        <div class="dashboard-activity-list">
-          {% for sale in recent_sales %}
-          <div class="dashboard-activity-item">
-            <div>
-              <p class="dashboard-activity-title">{{ sale.product_name }}</p>
-              <p class="dashboard-activity-meta">Sale #{{ sale.id }} • {{ sale.sale_date }}</p>
-            </div>
-            <span class="dashboard-activity-quantity">-{{ sale.quantity_sold }}</span>
-          </div>
-          {% endfor %}
-        </div>
-        {% else %}
-        <div class="dashboard-empty-state dashboard-empty-state-sm">
-          <i class="fas fa-receipt"></i>
-          <h3>No sales recorded yet</h3>
-          <p>Record your first sale to start tracking recent activity here.</p>
-        </div>
-        {% endif %}
-      </div>
+      {% endfor %}
     </div>
-  </div>
-</div>
-
-<div class="row mt-4">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-robot mr-2"></i>AI Restock Recommendations</h3>
-        <p class="card-subtitle mb-0">Powered by Amazon Bedrock. Updated daily via cron.</p>
-      </div>
-      <div class="card-body p-0">
-        {% if ai_predictions %}
-        <table class="table table-striped mb-0">
-          <thead>
-            <tr>
-              <th>Product</th><th>SKU</th><th>Current Stock</th><th>Restock Qty</th><th>Reasoning</th><th>Predicted At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for p in ai_predictions %}
-            <tr>
-              <td>{{ p.name }}</td>
-              <td><code>{{ p.sku }}</code></td>
-              <td>{% if p.stock_quantity == 0 %}<span class="badge badge-danger">Out of Stock</span>{% else %}<span class="badge badge-warning">{{ p.stock_quantity }}</span>{% endif %}</td>
-              <td><strong>{{ p.recommended_restock_qty }}</strong></td>
-              <td><small>{{ p.reasoning }}</small></td>
-              <td><small>{{ p.predicted_at }}</small></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% else %}
-        <div class="p-4 text-center text-muted"><p>No predictions yet.</p></div>
-        {% endif %}
-      </div>
+    {% else %}
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <p class="mt-3 text-sm font-semibold text-slate-800">No sales yet.</p>
+      <p class="mt-1 text-sm text-slate-500">Record your first sale to see it here.</p>
     </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

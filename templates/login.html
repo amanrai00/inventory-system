@@ -3,197 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Inventory System</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <title>Sign In - Inventory System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      background: #eef2f5;
-      font-family: "Segoe UI", Arial, sans-serif;
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
     }
-    .login-box {
-      width: 380px;
-      margin-top: 8%;
-    }
-    .login-logo {
-      font-size: 1.2rem;
-      color: #1f2937;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 0.9rem;
-    }
-    .login-logo b {
-      font-weight: 700;
-      color: #111827;
-    }
-    .login-logo-mark {
-      width: 34px;
-      height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      background: #dbeafe;
-      color: #2563eb;
-      font-size: 0.85rem;
-    }
-    .card {
-      border: 1px solid #d9e2ec;
-      border-radius: 8px;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
-    }
-    .login-card-body {
-      padding: 1.5rem;
-    }
-    .login-box-msg {
-      color: #6b7280;
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-      font-weight: 500;
-    }
-    .login-badge {
-      display: inline-block;
-      margin-bottom: 0.85rem;
-      padding: 0.28rem 0.55rem;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #2563eb;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .form-control {
-      border-radius: 6px;
-      height: 42px;
-      border-color: #cbd5e1;
-    }
-    .form-control.is-invalid {
-      border-color: #dc2626;
-      border-width: 0 0 2px 0;
-      border-radius: 0;
-      box-shadow: none;
-      padding-left: 0;
-      padding-right: 0;
-      background-image: none;
-    }
-    .form-control:focus {
-      border-color: #5a9bd5;
-      box-shadow: 0 0 0 2px rgba(90,155,213,0.15);
-    }
-    .form-control.is-invalid:focus {
-      border-color: #dc2626;
-      box-shadow: 0 2px 0 0 rgba(220, 38, 38, 0.12);
-    }
-    .btn-primary {
-      background: #2f6fdf;
-      border-color: #2563eb;
-      border-radius: 6px;
-      font-weight: 700;
-      min-height: 44px;
-    }
-    .btn-primary:hover {
-      background: #275fc0;
-      border-color: #275fc0;
-    }
-    .company-note {
-      text-align: center;
-      margin-top: 0.85rem;
-      font-size: 0.78rem;
-      color: #7b8794;
-    }
-    .field-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #475569;
-      margin-bottom: 0.35rem;
-    }
-    .field-error {
-      display: block;
-      margin-top: 0.45rem;
-      color: #dc2626;
-      font-size: 0.86rem;
-      font-weight: 600;
-    }
-    .field-error i,
-    .top-error i {
-      margin-right: 0.35rem;
-    }
-    .top-error {
-      margin-bottom: 1rem;
-      padding: 0.75rem 0.9rem;
-      border: 1px solid #fecaca;
-      border-radius: 6px;
-      background: #fef2f2;
-      color: #991b1b;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-  </style>
+  </script>
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <span class="login-logo-mark"><i class="fas fa-boxes"></i></span>
-    <span><b>Inventory</b>&nbsp;System</span>
-  </div>
-  <div class="card">
-    <div class="card-body login-card-body">
-      <div class="login-badge">Internal Access</div>
-      <p class="login-box-msg">Sign in with your employee account</p>
+<body class="min-h-screen font-sans antialiased text-slate-950">
+  <main class="flex min-h-screen items-center justify-center px-4 py-12">
+    <div class="w-full max-w-sm">
 
-      {% if general_error %}
-        <div class="top-error">
-          <i class="fas fa-circle"></i>{{ general_error }}
+      <!-- Brand -->
+      <div class="mb-7 flex items-center gap-3">
+        <span class="brand-mark flex h-10 w-10 items-center justify-center rounded-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-white" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+            <path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
+          </svg>
+        </span>
+        <div>
+          <p class="text-base font-bold tracking-tight text-slate-950">Inventory System</p>
+          <p class="text-[10px] uppercase tracking-widest text-slate-400">Management</p>
         </div>
-      {% endif %}
+      </div>
 
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }} py-2" style="font-size:0.88rem; border-radius:3px;">{{ message }}</div>
-          {% endfor %}
+      <!-- Card -->
+      <div class="surface-panel rounded-2xl p-6">
+        <h1 class="text-xl font-bold text-slate-950">Sign in</h1>
+        <p class="mt-1 text-sm text-slate-500">Enter your credentials to continue.</p>
+
+        {% if general_error %}
+          <div role="alert" class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
+            {{ general_error }}
+          </div>
         {% endif %}
-      {% endwith %}
 
-      <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
-        <div class="form-group">
-          <label for="email" class="field-label">Email</label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            class="form-control{% if field_errors and field_errors.get('email') %} is-invalid{% endif %}"
-            placeholder="you@company.com"
-            value="{{ form_data.email if form_data else '' }}"
-          >
-          {% if field_errors and field_errors.get('email') %}
-            <div class="field-error"><i class="fas fa-circle"></i>{{ field_errors.get('email') }}</div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div role="alert" class="mt-4 rounded-xl border px-4 py-3 text-sm font-semibold
+                {% if category == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-800
+                {% elif category == 'danger' or category == 'error' %}border-red-200 bg-red-50 text-red-800
+                {% else %}border-teal-200 bg-teal-50 text-teal-800{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
           {% endif %}
-        </div>
-        <div class="form-group">
-          <label for="password" class="field-label">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            class="form-control{% if field_errors and field_errors.get('password') %} is-invalid{% endif %}"
-            placeholder="Enter password"
-          >
-          {% if field_errors and field_errors.get('password') %}
-            <div class="field-error"><i class="fas fa-circle"></i>{{ field_errors.get('password') }}</div>
-          {% endif %}
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-      </form>
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.login') }}" novalidate class="mt-5 space-y-4">
+          <div>
+            <label for="email" class="field-label">Email</label>
+            <input
+              type="email" name="email" id="email"
+              placeholder="you@company.com"
+              value="{{ form_data.email if form_data else '' }}"
+              class="field-input {% if field_errors and field_errors.get('email') %}is-invalid{% endif %}"
+            >
+            {% if field_errors and field_errors.get('email') %}
+              <p class="mt-1.5 text-xs font-semibold text-red-600">{{ field_errors.get('email') }}</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label for="password" class="field-label">Password</label>
+            <input
+              type="password" name="password" id="password"
+              placeholder="Enter password"
+              class="field-input {% if field_errors and field_errors.get('password') %}is-invalid{% endif %}"
+            >
+            {% if field_errors and field_errors.get('password') %}
+              <p class="mt-1.5 text-xs font-semibold text-red-600">{{ field_errors.get('password') }}</p>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn-primary w-full mt-1">
+            Sign In
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+
+      <p class="mt-5 text-center text-xs text-slate-400">For access issues, contact your administrator.</p>
     </div>
-  </div>
-  <p class="company-note">Internal use only &middot; Contact IT for access</p>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+  </main>
 </body>
 </html>

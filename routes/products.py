@@ -78,9 +78,20 @@ def list_products():
     products = get_all_products(mysql)
     search = request.args.get('search', '').strip()
     status_filter = request.args.get('status', 'ALL').strip().upper()
+    sort_by = request.args.get('sort', '')
+    sort_dir = request.args.get('dir', 'asc').lower()
+
     allowed_statuses = {'ALL', 'NORMAL', 'LOW STOCK', 'OUT OF STOCK'}
     if status_filter not in allowed_statuses:
         status_filter = 'ALL'
+
+    allowed_sorts = {'sku', 'price', 'stock_quantity', 'minimum_stock_level', 'status'}
+    if sort_by not in allowed_sorts:
+        sort_by = ''
+    if sort_dir not in ('asc', 'desc'):
+        sort_dir = 'asc'
+
+    status_order = {'NORMAL': 0, 'LOW STOCK': 1, 'OUT OF STOCK': 2}
 
     products_with_status = []
     for p in products:
@@ -104,9 +115,18 @@ def list_products():
 
         products_with_status.append(product_data)
 
+    if sort_by:
+        reverse = sort_dir == 'desc'
+        if sort_by == 'status':
+            products_with_status.sort(key=lambda p: status_order.get(p['status'], 0), reverse=reverse)
+        else:
+            products_with_status.sort(key=lambda p: (p[sort_by] is None, p[sort_by]), reverse=reverse)
+
     filters = {
         'search': search,
         'status': status_filter,
+        'sort': sort_by,
+        'dir': sort_dir,
     }
 
     return render_template('products/list.html', products=products_with_status, filters=filters)
