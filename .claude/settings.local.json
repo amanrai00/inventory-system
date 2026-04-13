@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://raw.githubusercontent.com/nextlevelbuilder/ui-ux-pro-max-skill/main/README.md\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/amanrai00/inventory-system/main/README.md\")",
+      "Bash(curl -s \"https://api.github.com/repos/nextlevelbuilder/ui-ux-pro-max-skill/contents/\")",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(f'{i[\\\\\"type\\\\\"]}\\\\t{i[\\\\\"name\\\\\"]}'\\) for i in data]\")",
+      "Bash(curl -s \"https://api.github.com/repos/amanrai00/inventory-system/contents/\")",
+      "Bash(curl -s \"https://api.github.com/repos/amanrai00/inventory-system/contents/templates\")",
+      "Bash(curl -s \"https://api.github.com/repos/nextlevelbuilder/ui-ux-pro-max-skill/contents/src\")",
+      "Bash(curl -s \"https://api.github.com/repos/nextlevelbuilder/ui-ux-pro-max-skill/contents/src/ui-ux-pro-max\")",
+      "Bash(curl -s \"https://api.github.com/repos/amanrai00/inventory-system/contents/templates/products\")",
+      "Bash(curl -s \"https://api.github.com/repos/amanrai00/inventory-system/contents/templates/sales\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/amanrai00/inventory-system/main/static/css/style.css\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/amanrai00/inventory-system/main/templates/base.html\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/amanrai00/inventory-system/main/app.py\")",
+      "Bash(python app.py)",
+      "Bash(pip install:*)",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(uipro init:*)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"inventory management B2B internal dashboard SaaS minimalism\" --design-system --persist -p \"InventorySystem\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"dashboard table form layout responsive\" --stack html-tailwind)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"accessibility animation focus keyboard\" --domain ux)",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"inventory management SaaS dashboard operations internal tool professional\" --design-system --persist -p \"Inventory System\")"
+    ]
+  }
+}
