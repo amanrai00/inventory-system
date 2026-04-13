@@ -10,3 +10,4 @@ instance/
 # Claude Code tooling
 .claude/
 design-system/
+app.log
