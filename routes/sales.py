@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.sale import record_sale, get_sales_history_filtered
 from models.product import get_all_products, get_product_by_id
 from routes.auth import login_required
+from utils.email_alerts import send_low_stock_alert
 
 sales_bp = Blueprint('sales', __name__)
 
@@ -48,6 +49,14 @@ def record():
         success, message = record_sale(mysql, product_id, quantity_sold)
         if success:
             flash(message, 'success')
+            product = get_product_by_id(mysql, product_id)
+            if product and product[4] <= product[5]:
+                send_low_stock_alert(
+                    product_name=product[1],
+                    sku=product[2],
+                    stock_quantity=product[4],
+                    minimum_stock_level=product[5]
+                )
             return redirect(url_for('sales.history'))
         else:
             flash(message, 'danger')

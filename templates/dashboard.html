@@ -240,4 +240,33 @@
     {% endif %}
   </div>
 </div>
+
+<!-- AI Restock Recommendations -->
+<div class="surface-panel mt-6">
+  <div class="flex items-center justify-between gap-3 border-b border-slate-200/60 px-5 py-4">
+    <div>
+      <div class="section-kicker"><p class="eyebrow">Powered by Amazon Bedrock</p></div>
+      <h3 class="mt-1.5 text-base font-bold text-slate-950">AI Restock Recommendations</h3>
+    </div>
+  </div>
+  {% if ai_predictions %}
+  <div class="divide-y divide-slate-200/60">
+    {% for p in ai_predictions %}
+    <div class="flex items-start justify-between gap-3 px-5 py-3.5">
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-slate-900 truncate">{{ p.product_name }}</p>
+        <p class="mt-0.5 text-xs text-slate-400">{{ p.predicted_at }}</p>
+        <p class="mt-1 text-sm text-slate-600">{{ p.reasoning }}</p>
+      </div>
+      <span class="status-pill status-pill-warning shrink-0">Restock {{ p.recommended_restock_qty }} units</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p class="mt-3 text-sm font-semibold text-slate-800">No predictions yet.</p>
+    <p class="mt-1 text-sm text-slate-500">Run <code>python3 scripts/predict.py</code> to generate them.</p>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}
