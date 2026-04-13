@@ -37,19 +37,19 @@
             <option value="OUT OF STOCK" {% if filters.status == 'OUT OF STOCK' %}selected{% endif %}>Out of Stock</option>
           </select>
         </div>
-        <div class="flex items-end gap-2">
-          <button type="submit" class="btn-primary cursor-pointer">
+        <div class="flex items-center gap-2 sm:items-end">
+          <button type="submit" class="btn-primary flex-1 sm:flex-none cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             Filter
           </button>
-          <a href="{{ url_for('products.list_products') }}" class="btn-secondary cursor-pointer">Reset</a>
+          <a href="{{ url_for('products.list_products') }}" class="btn-secondary flex-1 sm:flex-none text-center cursor-pointer">Reset</a>
         </div>
       </form>
     </div>
   </div>
 
   {% if products %}
-  <div class="overflow-x-auto">
+  <div class="overflow-x-auto table-scroll-wrap">
     <table class="data-table w-full text-sm">
       <thead>
         <tr class="bg-slate-50/70 border-b border-slate-200/60">

@@ -346,6 +346,27 @@ a, button, select, input[type="submit"] {
   border-radius: 1rem;
 }
 
+/* Fade hint on right edge when table overflows horizontally */
+.table-scroll-wrap {
+  position: relative;
+}
+
+.table-scroll-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2.5rem;
+  background: linear-gradient(to right, transparent, rgba(248, 247, 244, 0.85));
+  pointer-events: none;
+  border-radius: 0 1rem 1rem 0;
+}
+
+@media (min-width: 768px) {
+  .table-scroll-wrap::after { display: none; }
+}
+
 .data-table th {
   color: var(--text-soft);
   font-size: 0.7rem;

@@ -29,14 +29,16 @@
   </a>
 
   <div class="app-shell lg:flex">
+
+    <!-- ── Sidebar ───────────────────────────────── -->
     <aside id="sidebar" class="app-sidebar w-full lg:sticky lg:top-0 lg:h-screen lg:w-60 lg:shrink-0 flex flex-col">
 
-      <!-- Brand -->
-      <div class="px-4 pt-5 pb-4 border-b border-white/8">
+      <!-- Brand row + hamburger -->
+      <div class="px-4 pt-4 pb-4 border-b border-white/8 flex items-center justify-between gap-3">
         <a href="{{ url_for('dashboard.dashboard') }}"
-           class="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500/50">
+           class="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500/50">
           <span class="brand-mark w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-white" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="18" height="18" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
               <path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
@@ -47,113 +49,133 @@
             <span class="block text-[10px] text-slate-500 uppercase tracking-widest mt-0.5">Management</span>
           </span>
         </a>
+
+        <!-- Hamburger toggle — mobile only -->
+        <button id="sidebar-toggle"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+                aria-controls="sidebar-nav"
+                class="lg:hidden flex-shrink-0 rounded-lg p-2 text-slate-400 hover:text-white hover:bg-white/8 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer">
+          <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+          </svg>
+        </button>
       </div>
 
-      <!-- Nav -->
-      <nav class="flex-1 overflow-y-auto px-3 py-4" aria-label="Main navigation">
-        <p class="px-3 mb-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Menu</p>
-        <ul class="space-y-0.5" role="list">
-          <li>
-            <a href="{{ url_for('dashboard.dashboard') }}"
-               class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/>
-                <rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
-              </svg>
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('products.list_products') }}"
-               class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-                <path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
-              </svg>
-              <span>Products</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('products.add_product_route') }}"
-               class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/>
-              </svg>
-              <span>Add Product</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('sales.record') }}"
-               class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
-                <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
-              </svg>
-              <span>Record Sale</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('sales.history') }}"
-               class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/>
-                <path d="M12 7v5l4 2"/>
-              </svg>
-              <span>Sales History</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <!-- Nav — hidden on mobile until toggled, always visible on lg -->
+      <div id="sidebar-nav" class="hidden lg:flex lg:flex-col lg:flex-1 lg:overflow-y-auto">
 
-      <!-- User -->
-      <div class="px-3 pb-4">
-        <div class="rounded-xl border border-white/8 bg-white/5 px-3 py-3 flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
-              {{ session.get('user_name', 'G')[0]|upper }}
-            </span>
-            <div class="min-w-0">
-              <p class="text-sm font-semibold text-white truncate">{{ session.get('user_name', 'Guest') }}</p>
-              <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">{{ session.get('user_role', 'Staff') }}</p>
+        <nav class="flex-1 px-3 py-4" aria-label="Main navigation">
+          <p class="px-3 mb-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Menu</p>
+          <ul class="space-y-0.5" role="list">
+            <li>
+              <a href="{{ url_for('dashboard.dashboard') }}"
+                 class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/>
+                  <rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+                </svg>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('products.list_products') }}"
+                 class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+                  <path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
+                </svg>
+                <span>Products</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('products.add_product_route') }}"
+                 class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/>
+                </svg>
+                <span>Add Product</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('sales.record') }}"
+                 class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                  <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <span>Record Sale</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('sales.history') }}"
+                 class="nav-link group flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/>
+                  <path d="M12 7v5l4 2"/>
+                </svg>
+                <span>Sales History</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- User -->
+        <div class="px-3 pb-4">
+          <div class="rounded-xl border border-white/8 bg-white/5 px-3 py-3 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                {{ session.get('user_name', 'G')[0]|upper }}
+              </span>
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-white truncate">{{ session.get('user_name', 'Guest') }}</p>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">{{ session.get('user_role', 'Staff') }}</p>
+              </div>
             </div>
+            <a href="{{ url_for('auth.logout') }}"
+               title="Sign out"
+               aria-label="Sign out"
+               class="flex-shrink-0 rounded-lg border border-white/10 bg-white/5 p-1.5 text-slate-400 transition-colors hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+              </svg>
+            </a>
           </div>
-          <a href="{{ url_for('auth.logout') }}"
-             title="Sign out"
-             aria-label="Sign out"
-             class="flex-shrink-0 rounded-lg border border-white/10 bg-white/5 p-1.5 text-slate-400 transition-colors hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
-            </svg>
-          </a>
         </div>
-      </div>
+
+      </div><!-- /sidebar-nav -->
     </aside>
 
-    <!-- Main content area -->
+    <!-- ── Main area ─────────────────────────────── -->
     <div class="flex flex-col min-h-screen w-full min-w-0">
 
       <!-- Topbar -->
       <header class="app-topbar sticky top-0 z-30 border-b border-slate-200/60 px-4 sm:px-6 lg:px-8">
-        <div class="mx-auto max-w-7xl flex flex-col gap-3 py-4 xl:flex-row xl:items-center xl:justify-between">
+        <div class="mx-auto max-w-7xl flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="page-head-mark">
             <p class="eyebrow">{% block page_eyebrow %}Overview{% endblock %}</p>
-            <h1 class="mt-1.5 text-2xl font-bold tracking-tight text-slate-950">{% block page_title %}{% endblock %}</h1>
+            <h1 class="mt-1.5 text-xl sm:text-2xl font-bold tracking-tight text-slate-950">{% block page_title %}{% endblock %}</h1>
           </div>
-          <div class="flex items-center gap-2.5">
+          <div class="flex items-center gap-2 flex-wrap">
             {% block page_actions %}{% endblock %}
           </div>
         </div>
       </header>
 
       <!-- Page content -->
-      <main id="main-content" class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+      <main id="main-content" class="flex-1 px-4 py-5 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl">
 
           {% with messages = get_flashed_messages(with_categories=true) %}
@@ -201,12 +223,27 @@
 
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
   <script>
+    // Active nav link
     (function () {
       var path = window.location.pathname;
       document.querySelectorAll('.nav-link').forEach(function (a) {
-        if (a.getAttribute('href') === path) {
-          a.classList.add('is-active');
-        }
+        if (a.getAttribute('href') === path) a.classList.add('is-active');
+      });
+    })();
+
+    // Hamburger toggle
+    (function () {
+      var btn = document.getElementById('sidebar-toggle');
+      var nav = document.getElementById('sidebar-nav');
+      var iconMenu = document.getElementById('icon-menu');
+      var iconClose = document.getElementById('icon-close');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var open = nav.classList.toggle('hidden');
+        var isOpen = !open;
+        btn.setAttribute('aria-expanded', isOpen);
+        iconMenu.classList.toggle('hidden', isOpen);
+        iconClose.classList.toggle('hidden', !isOpen);
       });
     })();
   </script>
