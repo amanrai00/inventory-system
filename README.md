@@ -1,63 +1,93 @@
 # Inventory Management System
 
-Internal inventory management dashboard built with Flask, Jinja2, and AdminLTE.
+> 🇯🇵 日本語版はこちら → [README_JA.md](./README_JA.md)
 
-This project is designed as a portfolio MVP for demonstrating:
-- authentication and session handling
-- product inventory management
-- stock status logic
-- sales recording with stock deduction
-- operational dashboard design
-- structured Flask app organization
+A production-grade internal inventory management dashboard built with **Flask**, **Jinja2**, and **AdminLTE 3**, fully deployed on **AWS** (EC2 + RDS MySQL). Features AI-powered demand forecasting via **Amazon Bedrock**, automated low-stock email alerts via **Amazon SES**, and a complete **CI/CD pipeline** through GitHub Actions.
 
-## Features
+> **Live:** [http://35.77.96.153](http://35.77.96.153/login) — AWS EC2 · ap-northeast-1 (Tokyo)
 
-- Employee login/logout flow
-- Dashboard with:
-  - total products
-  - low stock count
-  - out of stock count
-  - total sales count
-  - critical inventory section
-  - recent sales activity
-- Product management:
-  - add product
-  - edit product
-  - stock status badges
-  - search by name or SKU
-  - filter by stock status
-- Sales management:
-  - record sale
-  - automatic stock deduction
-  - oversell protection
-  - sales history search and date filtering
-- Server-side validation for products and sales
+---
 
 ## Tech Stack
 
-- Python
-- Flask
-- Jinja2
-- AdminLTE 3
-- Bootstrap 4
-- Font Awesome
-- SQLite for local development by default
-- MySQL config supported through environment variables
+| Layer | Technology |
+|---|---|
+| Backend | Python 3, Flask (Blueprints) |
+| Frontend | Jinja2, AdminLTE 3, Bootstrap 4 |
+| Database | MySQL 8.4 on AWS RDS (prod) / SQLite (local dev) |
+| Server | Ubuntu 24 EC2 · Nginx reverse proxy · systemd |
+| AI / ML | Amazon Bedrock — Claude Haiku 4.5 (jp inference profile) |
+| Alerts | Amazon SES (low stock) · CloudWatch + SNS (CPU alarm) |
+| CI/CD | GitHub Actions — auto-deploy on push to `main` |
+| Auth | IAM Role (`inventory-ec2-ses-role`) — no hardcoded AWS keys |
+
+---
+
+## Features
+
+### Core Application
+- Secure employee login / logout with session handling
+- Dashboard: total products, low-stock count, out-of-stock count, total sales
+- **Product management** — add, edit, search by name or SKU, filter by stock status
+- **Sales management** — record sales with automatic stock deduction and oversell protection
+- Sales history with search and date-range filtering
+- Server-side validation throughout
+
+### AWS Integrations
+- **Amazon SES** — triggers a low-stock email alert automatically when a sale brings `stock_quantity` below `minimum_stock_level`
+- **CloudWatch Alarm** — monitors EC2 CPU; fires SNS email notification when utilization exceeds 80% for 1 consecutive minute
+- **Amazon Bedrock (Claude Haiku 4.5)** — daily cron job at 2 AM (EC2 time) queries all low-stock products, fetches 30-day sales history per product, and calls Bedrock to generate `recommended_restock_qty` + reasoning; results are stored in the `predictions` table and displayed on the dashboard
+
+---
+
+## Architecture
+
+```
+Browser
+  │
+  ▼
+Nginx (port 80)
+  │  reverse proxy
+  ▼
+Flask app (port 5000, internal)
+  │             │              │
+  ▼             ▼              ▼
+MySQL RDS    Amazon SES    Amazon Bedrock
+(inventory)  (email alerts) (AI predictions)
+                              │
+                         CloudWatch
+                        (CPU alarm → SNS → email)
+```
+
+---
+
+## Database Schema
+
+```
+products      — id, name, sku, price, stock_quantity, minimum_stock_level
+sales         — id, product_id, quantity_sold, sale_date
+users         — id, name, email, password_hash, role
+predictions   — id, product_id, recommended_restock_qty, reasoning, predicted_at
+```
+
+**Stock status logic:**
+- `OUT OF STOCK` → `stock_quantity == 0`
+- `LOW STOCK` → `stock_quantity <= minimum_stock_level`
+- `NORMAL` → `stock_quantity > minimum_stock_level`
+
+---
 
 ## Project Structure
 
-```text
+```
 inventory-system/
-├── app.py
-├── config.py
-├── requirements.txt
-├── .env.example
-├── DESIGN.md
-├── inventory-project-guide.md
+├── .github/workflows/deploy.yml   # GitHub Actions CI/CD
 ├── database/
-│   ├── client.py
-│   ├── schema.sql
+│   ├── client.py                  # SQLite wrapper (local dev)
+│   ├── schema.sql                 # MySQL schema (production)
 │   └── schema_sqlite.sql
+├── logs/
+│   └── predict.log                # Bedrock cron output
 ├── models/
 │   ├── product.py
 │   ├── sale.py
@@ -68,159 +98,147 @@ inventory-system/
 │   ├── products.py
 │   └── sales.py
 ├── scripts/
-│   └── init_db.py
+│   ├── init_db.py                 # DB initializer + admin seed
+│   ├── import_csv.py              # Bulk CSV import
+│   └── predict.py                 # Bedrock AI demand prediction
 ├── static/
 │   ├── css/style.css
 │   └── js/app.js
-└── templates/
-    ├── base.html
-    ├── dashboard.html
-    ├── login.html
-    ├── products/
-    └── sales/
+├── templates/
+│   ├── base.html
+│   ├── dashboard.html             # includes AI Restock Recommendations
+│   ├── login.html
+│   ├── products/
+│   └── sales/
+├── utils/
+│   └── email_alerts.py            # SES low-stock alert helper
+├── .env.example
+├── app.py
+├── config.py
+└── requirements.txt
 ```
 
-## Local Setup
+---
 
-### 1. Clone the repository
+## Local Development Setup
 
-```powershell
+### 1. Clone and set up environment
+
+```bash
 git clone https://github.com/amanrai00/inventory-system.git
 cd inventory-system
-```
-
-### 2. Create and activate a virtual environment
-
-```powershell
 python -m venv venv
+
+# Windows
 .\venv\Scripts\Activate.ps1
-```
 
-### 3. Install dependencies
+# macOS / Linux
+source venv/bin/activate
 
-```powershell
 pip install -r requirements.txt
 ```
 
-### 4. Create your environment file
+### 2. Configure environment variables
 
-Copy `.env.example` to `.env` and update values if needed.
+```bash
+cp .env.example .env
+```
 
-Example:
+Edit `.env` for local SQLite development:
 
 ```env
 DB_BACKEND=sqlite
 SQLITE_PATH=instance/inventory.db
 FLASK_DEBUG=1
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=inventory_db
-DB_USER=root
-DB_PASSWORD=your_mysql_password
 SECRET_KEY=replace_with_a_real_secret_key
 ```
 
-## Database Setup
+### 3. Initialize the database
 
-### Default local setup: SQLite
-
-The project currently defaults to SQLite for easy local development.
-
-Run:
-
-```powershell
-.\venv\Scripts\python.exe scripts\init_db.py
+```bash
+python scripts/init_db.py
 ```
 
-This creates the local database and seeds a default admin user.
+### 4. Run
 
-### Optional: MySQL
-
-If you want to use MySQL instead:
-
-1. Set `DB_BACKEND=mysql` in `.env`
-2. Update `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`
-3. Run:
-
-```powershell
-.\venv\Scripts\python.exe scripts\init_db.py
+```bash
+python app.py
+# Open http://127.0.0.1:5000/login
 ```
 
-## Run the App
+**Default login:** `admin@company.com` / `admin123`
 
-```powershell
-.\venv\Scripts\python.exe app.py
+---
+
+## Deployment (AWS)
+
+| Resource | Value |
+|---|---|
+| EC2 instance | `aman-inventory-prod` — Ubuntu 24, ap-northeast-1 |
+| Public IP | `35.77.96.153` |
+| RDS endpoint | `inventory-db.cle6c28amu35.ap-northeast-1.rds.amazonaws.com` |
+| RDS engine | MySQL Community 8.4.8 (db.t4g.micro) |
+| Process manager | systemd (`inventory.service`) |
+| Reverse proxy | Nginx — port 80 → Flask port 5000 (internal) |
+
+The GitHub Actions workflow (`.github/workflows/deploy.yml`) automatically SSHs into EC2, pulls the latest code, installs dependencies, and restarts the Flask service on every push to `main`.
+
+---
+
+## Useful Commands (on EC2)
+
+```bash
+# App status and logs
+sudo systemctl status inventory
+journalctl -u inventory -f
+
+# Manual deploy
+git pull origin main && pip install -r requirements.txt && sudo systemctl restart inventory
+
+# Run AI predictions manually
+cd ~/inventory-system && source venv/bin/activate && python3 scripts/predict.py
+tail -50 logs/predict.log
+
+# Nginx
+sudo nginx -t && sudo systemctl reload nginx
+
+# Test CloudWatch alarm manually
+aws cloudwatch set-alarm-state \
+  --alarm-name "inventory-ec2-cpu-high" \
+  --state-value ALARM \
+  --state-reason "Manual test" \
+  --region ap-northeast-1
 ```
 
-Open in your browser:
+---
 
-```text
-http://127.0.0.1:5000/login
-```
+## Roadmap
 
-For production, set:
+- [x] Flask app with Blueprints
+- [x] EC2 + RDS deployment (Tokyo region)
+- [x] systemd process management (survives reboots)
+- [x] Nginx reverse proxy
+- [x] GitHub Actions CI/CD
+- [x] SES low-stock email alerts
+- [x] CloudWatch CPU alarm → SNS
+- [x] Amazon Bedrock AI demand prediction (daily cron)
+- [ ] S3 product image uploads
+- [ ] HTTPS / SSL certificate
+- [ ] Gunicorn production WSGI server
+- [ ] Automated tests
 
-```env
-FLASK_DEBUG=0
-DB_BACKEND=mysql
-```
+---
 
-## Demo Login
+## Security Notes
 
-Use the seeded admin account:
+- No AWS credentials are hardcoded — the EC2 instance authenticates via IAM role (`inventory-ec2-ses-role`)
+- `.env` is gitignored and never pushed to GitHub
+- Port 5000 is not exposed externally — all traffic goes through Nginx on port 80
+- RDS security group restricts MySQL access to the EC2 security group only (`inventory-sg`)
+- SSH key pair: `aman-inventory-prod-v2.pem`
 
-- Email: `admin@company.com`
-- Password: `admin123`
+---
 
-## Business Logic
+## License
 
-Stock status rules:
-
-- `OUT OF STOCK` when `stock_quantity == 0`
-- `LOW STOCK` when `stock_quantity <= minimum_stock_level`
-- `NORMAL` when `stock_quantity > minimum_stock_level`
-
-Sales flow:
-
-1. Select product
-2. Enter quantity sold
-3. Validate available stock
-4. Save sale
-5. Reduce stock automatically
-
-## Current Status
-
-Implemented:
-
-- authentication
-- dashboard
-- product add/edit/list
-- sales record/history
-- dashboard operational panels
-- product search/filter
-- sales history filtering
-- server-side validation
-- local git initialization
-
-Planned next steps:
-
-- GitHub publishing
-- README screenshots
-- automated tests
-- MySQL-only cleanup if required
-- EC2 and RDS deployment
-
-## Screenshots
-
-Add screenshots here after pushing the repo:
-
-- Login page
-- Dashboard
-- Products page
-- Sales history page
-
-## Notes
-
-- `.env`, local database files, and virtual environments are ignored by git
-- `FLASK_DEBUG=1` is intended for local development only
-- This project uses a clean Flask blueprint structure suitable for extension and deployment
+This project is for portfolio and learning purposes.
