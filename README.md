@@ -43,6 +43,17 @@ A production-grade internal inventory management dashboard built with **Flask**,
 
 -----
 
+## Screenshots
+
+### Dashboard
+![Dashboard](./screenshots/dashboard.png)
+
+### Product Inventory
+![Products](./screenshots/products.png)
+
+### AI Restock Recommendations (Powered by Amazon Bedrock)
+![AI Predictions](./screenshots/ai-predictions.png)
+
 ## Architecture
 
 ```
