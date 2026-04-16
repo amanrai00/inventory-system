@@ -46,22 +46,40 @@ A production-grade internal inventory management dashboard built with **Flask**,
 ## Architecture
 
 ```
-Browser
-  │
-  ▼
-Nginx (port 80)
-  │  reverse proxy
-  ▼
-Flask app (port 5000 — internal only)
-  │             │                │
-  ▼             ▼                ▼
-MySQL RDS    Amazon SES      Amazon Bedrock
-(inventory)  (low stock       (AI demand
-             email alert)      prediction)
-                                │
-                           CloudWatch Alarm
-                           (CPU > 80% → SNS → email)
+┌─────────────────────────────────────────────────────────────┐
+│                        DEVELOPER                            │
+│                    git push → main                          │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    GitHub Actions                           │
+│         SSH → pull → pip install → systemctl restart        │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ deploy
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│              EC2 (aman-inventory-prod · ap-northeast-1)     │
+│                                                             │
+│   Browser ──▶ Nginx :80 ──▶ Flask :5000 (systemd)          │
+│                                  │                          │
+│               IAM Role: inventory-ec2-ses-role              │
+└──────────┬───────────────────────┼─────────────────────────┘
+           │                       │
+           ▼                       ▼
+┌──────────────────┐   ┌───────────────────────────────────┐
+│   RDS MySQL 8.4  │   │         AWS Services               │
+│  inventory-db    │   │                                    │
+│  ap-northeast-1c │   │  Amazon SES → low-stock email      │
+└──────────────────┘   │                                    │
+                       │  Amazon Bedrock (Claude Haiku 4.5) │
+                       │  → daily restock prediction (2AM)  │
+                       │                                    │
+                       │  CloudWatch Alarm                  │
+                       │  CPU > 80% → SNS → email           │
+                       └───────────────────────────────────┘
 ```
+
 
 -----
 
