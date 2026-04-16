@@ -43,6 +43,17 @@
 
 -----
 
+## スクリーンショット
+
+### ダッシュボード
+![Dashboard](./screenshots/dashboard.png)
+
+### 商品一覧
+![Products](./screenshots/products.png)
+
+### AI 補充推奨（Amazon Bedrock）
+![AI Predictions](./screenshots/ai-predictions.png)
+
 ## システムアーキテクチャ
 
 ```
