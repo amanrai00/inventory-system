@@ -46,40 +46,36 @@ A production-grade internal inventory management dashboard built with **Flask**,
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        DEVELOPER                            │
-│                    git push → main                          │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    GitHub Actions                           │
-│         SSH → pull → pip install → systemctl restart        │
-└──────────────────────────┬──────────────────────────────────┘
-                           │ deploy
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│              EC2 (aman-inventory-prod · ap-northeast-1)     │
-│                                                             │
-│   Browser ──▶ Nginx :80 ──▶ Flask :5000 (systemd)          │
-│                                  │                          │
-│               IAM Role: inventory-ec2-ses-role              │
-└──────────┬───────────────────────┼─────────────────────────┘
-           │                       │
-           ▼                       ▼
-┌──────────────────┐   ┌───────────────────────────────────┐
-│   RDS MySQL 8.4  │   │         AWS Services               │
-│  inventory-db    │   │                                    │
-│  ap-northeast-1c │   │  Amazon SES → low-stock email      │
-└──────────────────┘   │                                    │
-                       │  Amazon Bedrock (Claude Haiku 4.5) │
-                       │  → daily restock prediction (2AM)  │
-                       │                                    │
-                       │  CloudWatch Alarm                  │
-                       │  CPU > 80% → SNS → email           │
-                       └───────────────────────────────────┘
++----------------------------------------------------------------+
+|                      Developer                                 |
+|              Edit code and git push -> main                    |
++------------------------------+---------------------------------+
+                               |
+                               v
++----------------------------------------------------------------+
+|                GitHub Actions  (CI/CD Pipeline)                |
+|    SSH -> pull latest code -> install dependencies -> restart  |
++------------------------------+---------------------------------+
+                               |
+                               v
++----------------------------------------------------------------+
+|         EC2 Production Server  aman-inventory-prod (Tokyo)     |
+|                                                                |
+|   Browser -> Nginx (port 80) -> Flask app (port 5000 internal) |
+|                                                                |
+|           IAM Role Auth (no hardcoded AWS credentials)         |
++------------+---------------------------------------------------+
+             |                         |
+             v                         v
++--------------------+   +------------------------------------+
+|   RDS MySQL 8.4    |   |        AWS Integrated Services     |
+|   Inventory DB     |   |                                    |
+|   (Tokyo Region)   |   |  SES      -> low stock email alert |
++--------------------+   |  Bedrock  -> AI restock prediction |
+                         |             (daily cron 2AM)       |
+                         |  CloudWatch-> CPU monitor SNS alert|
+                         +------------------------------------+
 ```
-
 
 -----
 
