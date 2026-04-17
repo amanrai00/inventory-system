@@ -4,7 +4,8 @@
  
 **Flask**・**Jinja2**・**AdminLTE 3** で構築した社内向け在庫管理ダッシュボードです。**AWS**（EC2 + RDS MySQL）上に本番デプロイ済みで、**Amazon Bedrock** による AI 需要予測、日英バイリンガル UI、**Amazon SES** による低在庫メールアラート、**CloudWatch** による EC2 CPU 監視、**GitHub Actions** を使ったフル CI/CD パイプラインを備えています。
  
-> **本番環境:** [http://35.77.96.153](http://35.77.96.153/login) — AWS EC2 · ap-northeast-1（東京）· HTTP のみ（HTTPS はカスタムドメイン取得後に対応予定）
+> **ライブデモ:** [http://35.77.96.153](http://35.77.96.153/login) — AWS EC2 · ap-northeast-1（東京）· HTTP のみ（HTTPS はカスタムドメイン取得後に対応予定）
+> デモログイン: `demo@company.com` / `demo123`（読み取り専用の社員アカウント）
  
 ---
  
@@ -36,6 +37,7 @@
 - サーバーサイドバリデーション
 - 在庫ステータスは動的に算出 — 常にリアルタイムの在庫状態を反映
 - **バイリンガル UI（日英）** — Flask セッションに言語設定を保持し、全 UI 文字列・フラッシュメッセージ・在庫ステータスラベルをアクティブ言語で表示
+- **ロールベースアクセス制御** — `admin_required` デコレータで追加・編集・売上登録ルートを管理者のみに制限。社員/デモアカウントは読み取り専用で、管理者向け UI ボタンはテンプレートレベルで非表示
 ### AWS 連携機能
  
 - **Amazon SES** — 売上登録後に `stock_quantity` が `minimum_stock_level` を下回った際、低在庫メールアラートを自動送信
@@ -47,15 +49,15 @@
  
 ### ダッシュボード
  
-![Dashboard](screenshots/dashboard_ja.png)
+![Dashboard](screenshots/dashboard.png)
  
 ### 商品一覧
  
-![Products](screenshots/products_ja.png)
+![Products](screenshots/products.png)
  
 ### AI 補充推奨（Amazon Bedrock）
  
-![AI Predictions](screenshots/ai-predictions_ja.png)
+![AI Predictions](screenshots/ai-predictions.png)
  
 ---
  
@@ -210,8 +212,8 @@ python app.py
 # ブラウザで http://127.0.0.1:5000/login を開く
 ```
  
-**デモ用デフォルトログイン:** `admin@company.com` / `admin123`  
-*（実運用環境では必ずパスワードを変更してください）*
+**ローカル用デフォルトログイン:** `admin@company.com` / `admin123`（`init_db.py` でシード — 実運用前に必ず変更）  
+**ライブデモ:** `demo@company.com` / `demo123`（読み取り専用の社員アカウント）
  
 ---
  
@@ -220,9 +222,7 @@ python app.py
 | リソース | 詳細 |
 | --- | --- |
 | EC2 インスタンス | `aman-inventory-prod` — Ubuntu 24, ap-northeast-1（東京） |
-| パブリック IP | `35.77.96.153` |
-| RDS エンドポイント | `inventory-db.cle6c28amu35.ap-northeast-1.rds.amazonaws.com` |
-| RDS エンジン | MySQL Community 8.4.8、db.t4g.micro |
+| RDS エンジン | MySQL Community 8.4.8、db.t4g.micro、ap-northeast-1（非公開 — EC2 セキュリティグループのみアクセス可） |
 | WSGI サーバー | Gunicorn（3 ワーカー、ファクトリパターン） |
 | プロセス管理 | systemd（`inventory.service`）— 再起動後も自動起動 |
 | リバースプロキシ | Nginx — ポート 80 → Gunicorn ポート 5000（内部のみ） |
@@ -274,7 +274,7 @@ aws cloudwatch set-alarm-state \
 - [x] CSV から商品 100件・売上 240件をインポート
 - [x] バイリンガル UI（日英）— Flask セッションによる言語切替
 - [x] バイリンガル Bedrock 予測（reason_en + reason_ja）
-- [x] ロールベースアクセス制御（管理者 vs 社員）
+- [x] ロールベースアクセス制御（管理者 vs 社員）+ デモアカウント
 - [ ] HTTPS / SSL 証明書（Let's Encrypt — カスタムドメイン必要）
 - [ ] S3 商品画像アップロード
 - [ ] 自動テスト
@@ -285,7 +285,8 @@ aws cloudwatch set-alarm-state \
 - AWS 認証情報はハードコードなし — EC2 は IAM ロールで認証
 - `.env` は `.gitignore` 済みで GitHub には絶対にプッシュしない
 - パスワードは `werkzeug.security` の PBKDF2 でハッシュ化
-- 全ルートに `@login_required` デコレータを適用
+- 全ルートに `@login_required` デコレータを適用。書き込み操作には追加で `@admin_required` を適用
+- ロールベースアクセス制御 — 社員/デモアカウントは読み取り専用。管理者向け UI はテンプレートレベルで非表示、ルートレベルでもブロック
 - ポート 5000 は外部に非公開 — 全トラフィックは Nginx（ポート 80）を経由
 - RDS セキュリティグループは EC2 セキュリティグループからの接続のみ許可
 - SSH アクセスはキーペアのみ（`sshd_config` でパスワード認証無効）。ポート 22 は `0.0.0.0/0` に開放 — GitHub Actions CI/CD ランナーが動的 Azure IP を使用するため必要。OS レベルでパスワード認証を無効化することでセキュリティを担保
