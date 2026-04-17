@@ -568,6 +568,8 @@
       btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       btn.classList.toggle('lang-btn-active', isActive);
     });
+
+    document.body.classList.add('page-ready');
   }
 
   function initSwitcher() {

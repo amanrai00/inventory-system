@@ -4,6 +4,10 @@
    Font: Plus Jakarta Sans
    ===================================================== */
 
+/* Page transition — prevents flicker on navigation */
+body { opacity: 0; }
+body.page-ready { opacity: 1; transition: opacity 0.15s ease; }
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
