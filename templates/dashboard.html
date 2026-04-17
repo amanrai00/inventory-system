@@ -271,7 +271,7 @@
       <div class="min-w-0">
         <p class="text-sm font-semibold text-slate-900 truncate">{{ p.name }}</p>
         <p class="mt-0.5 text-xs text-slate-400">{{ p.predicted_at }}</p>
-        <p class="mt-1 text-sm text-slate-600">{{ p.reason_ja if session.get('lang') == 'ja' else p.reason_en }}</p>
+        <p class="mt-1 text-sm text-slate-600" data-prediction-en="{{ p.reason_en }}" data-prediction-ja="{{ p.reason_ja }}">{{ p.reason_en }}</p>
       </div>
       <span class="status-pill status-pill-warning shrink-0">
         <span data-i18n="status.restock">Restock</span> {{ p.recommended_restock_qty }} <span data-i18n="status.units">units</span>

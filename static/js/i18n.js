@@ -537,6 +537,12 @@
       el.textContent = formatDashboardOutOfStockCount(el.getAttribute('data-dashboard-out-of-stock-count'));
     });
 
+    document.querySelectorAll('[data-prediction-en]').forEach(function (el) {
+      el.textContent = lang === 'ja'
+        ? (el.getAttribute('data-prediction-ja') || el.getAttribute('data-prediction-en'))
+        : el.getAttribute('data-prediction-en');
+    });
+
     // Update language switcher buttons active state
     document.querySelectorAll('[data-lang-btn]').forEach(function (btn) {
       var isActive = btn.getAttribute('data-lang-btn') === lang;
