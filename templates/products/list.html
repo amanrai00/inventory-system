@@ -8,7 +8,7 @@
 {% block page_title_key %}products.page_title{% endblock %}
 
 {% block page_actions %}
-{% if session.get('role') == 'admin' %}
+{% if session.get('user_role') == 'admin' %}
 <a href="{{ url_for('products.add_product_route') }}" class="btn-primary cursor-pointer">
   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
   <span data-i18n="products.btn.add">Add Product</span>
@@ -112,7 +112,7 @@
             {% endif %}
           </td>
           <td class="px-5 py-3">
-            {% if session.get('role') == 'admin' %}
+            {% if session.get('user_role') == 'admin' %}
             <a href="{{ url_for('products.edit_product', id=product.id) }}" class="btn-ghost table-action cursor-pointer" data-i18n="products.btn.edit">Edit</a>
             {% endif %}
           </td>
