@@ -52,12 +52,14 @@ def call_bedrock(product_name, sku, stock_qty, min_stock, sold_last_30):
         "Respond in this exact JSON format with no extra text:\n"
         "{\n"
         '  "recommended_restock_qty": <integer>,\n'
-        '  "reasoning": "<one sentence explanation>"\n'
+        '  "reasoning": "<one sentence explanation in English>",\n'
+        '  "reasoning_en": "<one sentence explanation in English>",\n'
+        '  "reasoning_ja": "<one sentence explanation in natural, professional business Japanese>"\n'
         "}"
     )
     body = {
         "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 200,
+        "max_tokens": 400,
         "messages": [{"role": "user", "content": prompt}]
     }
     response = client.invoke_model(
@@ -70,10 +72,10 @@ def call_bedrock(product_name, sku, stock_qty, min_stock, sold_last_30):
     text = text.replace("```json", "").replace("```", "").strip()
     return json.loads(text)
 
-def save_prediction(cursor, conn, product_id, restock_qty, reasoning):
+def save_prediction(cursor, conn, product_id, restock_qty, reasoning, reasoning_en, reasoning_ja):
     cursor.execute(
-        "INSERT INTO predictions (product_id, recommended_restock_qty, reasoning) VALUES (%s, %s, %s)",
-        (product_id, restock_qty, reasoning)
+        "INSERT INTO predictions (product_id, recommended_restock_qty, reasoning, reason_en, reason_ja) VALUES (%s, %s, %s, %s, %s)",
+        (product_id, restock_qty, reasoning, reasoning_en, reasoning_ja)
     )
     conn.commit()
 
@@ -88,8 +90,11 @@ def run():
         print(f"  Processing: {name} (stock: {stock_qty}, sold last 30d: {sold_last_30})")
         try:
             prediction = call_bedrock(name, sku, stock_qty, min_stock, sold_last_30)
-            save_prediction(cursor, conn, product_id, prediction["recommended_restock_qty"], prediction["reasoning"])
-            print(f"    -> Restock {prediction['recommended_restock_qty']} units: {prediction['reasoning']}")
+            reasoning = prediction.get("reasoning", prediction.get("reasoning_en", ""))
+            reasoning_en = prediction.get("reasoning_en", reasoning)
+            reasoning_ja = prediction.get("reasoning_ja", "")
+            save_prediction(cursor, conn, product_id, prediction["recommended_restock_qty"], reasoning, reasoning_en, reasoning_ja)
+            print(f"    -> Restock {prediction['recommended_restock_qty']} units: {reasoning_en}")
         except Exception as e:
             print(f"    -> ERROR for {name}: {e}")
     cursor.close()

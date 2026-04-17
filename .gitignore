@@ -11,3 +11,5 @@ instance/
 .claude/
 design-system/
 app.log
+# Added by code-review-graph
+.code-review-graph/
