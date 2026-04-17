@@ -4,9 +4,9 @@
    Font: Plus Jakarta Sans
    ===================================================== */
 
-/* Page transition — prevents flicker on navigation */
-body { opacity: 0; }
-body.page-ready { opacity: 1; transition: opacity 0.15s ease; }
+/* Page transition — fade in main content after i18n applies */
+#main-content { opacity: 0; }
+body.page-ready #main-content { opacity: 1; transition: opacity 0.12s ease; }
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
