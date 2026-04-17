@@ -4,7 +4,8 @@
  
 A production-grade internal inventory management dashboard built with **Flask**, **Jinja2**, and **AdminLTE 3**, deployed on **AWS** (EC2 + RDS MySQL). Features AI-powered demand forecasting via **Amazon Bedrock**, bilingual EN/JA UI, automated low-stock email alerts via **Amazon SES**, EC2 CPU monitoring via **CloudWatch**, and a complete **CI/CD pipeline** through GitHub Actions.
  
-> **Live:** [http://35.77.96.153](http://35.77.96.153/login) — AWS EC2 · ap-northeast-1 (Tokyo) · HTTP only (HTTPS pending — requires custom domain)
+> **Live demo:** [http://35.77.96.153](http://35.77.96.153/login) — AWS EC2 · ap-northeast-1 (Tokyo) · HTTP only (HTTPS pending)
+> Demo login: `demo@company.com` / `demo123` (read-only employee account)
  
 ---
  
@@ -36,6 +37,7 @@ A production-grade internal inventory management dashboard built with **Flask**,
 - Server-side input validation throughout
 - Stock status computed dynamically — always reflects real-time inventory state
 - **Bilingual UI (EN/JA)** — full English/Japanese language toggle persisted via Flask session; all UI strings, flash messages, and stock status labels rendered in the active language
+- **Role-based access control** — `admin_required` decorator restricts add/edit/record routes to admin role; employee accounts are read-only with admin UI buttons hidden
 ### AWS Integrations
  
 - **Amazon SES** — automatically sends a low-stock email alert when a sale brings `stock_quantity` below `minimum_stock_level`
@@ -211,8 +213,8 @@ python app.py
 # Open http://127.0.0.1:5000/login
 ```
  
-**Default demo login:** `admin@company.com` / `admin123`  
-*(Change this password immediately in any real deployment)*
+**Default local login:** `admin@company.com` / `admin123` (seeded by `init_db.py` — change before any real use)  
+**Live demo:** `demo@company.com` / `demo123` (read-only employee account)
  
 ---
  
@@ -221,9 +223,7 @@ python app.py
 | Resource | Details |
 | --- | --- |
 | EC2 instance | `aman-inventory-prod` — Ubuntu 24, ap-northeast-1 (Tokyo) |
-| Public IP | `35.77.96.153` |
-| RDS endpoint | `inventory-db.cle6c28amu35.ap-northeast-1.rds.amazonaws.com` |
-| RDS engine | MySQL Community 8.4.8, db.t4g.micro |
+| RDS engine | MySQL Community 8.4.8, db.t4g.micro, ap-northeast-1 (private — EC2 security group access only) |
 | WSGI server | Gunicorn (3 workers, factory pattern) |
 | Process manager | systemd (`inventory.service`) — survives reboots |
 | Reverse proxy | Nginx — port 80 → Gunicorn port 5000 (internal only) |
@@ -275,7 +275,7 @@ aws cloudwatch set-alarm-state \
 - [x] 100 products + 240 sales records imported via CSV
 - [x] Bilingual EN/JA UI — full language toggle via Flask session
 - [x] Bilingual Bedrock predictions (reason_en + reason_ja)
-- [x] Role-based access control (admin vs employee)
+- [x] Role-based access control (admin vs employee) + demo account (demo@company.com)
 - [ ] HTTPS / SSL certificate (Let's Encrypt — requires custom domain)
 - [ ] S3 product image uploads
 - [ ] Automated tests
@@ -286,7 +286,8 @@ aws cloudwatch set-alarm-state \
 - No AWS credentials hardcoded — EC2 authenticates via IAM role
 - `.env` is gitignored and never pushed to GitHub
 - Passwords hashed with PBKDF2 via `werkzeug.security`
-- All routes protected with `@login_required` decorator
+- All routes protected with `@login_required` decorator; write operations additionally protected with `@admin_required`
+- Role-based access control — employee/demo accounts are read-only; admin UI hidden at template level and blocked at route level
 - Port 5000 not exposed externally — all traffic routed through Nginx on port 80
 - RDS security group allows MySQL connections from the EC2 security group only
 - SSH key-pair auth only (password authentication disabled in `sshd_config`); port 22 open to `0.0.0.0/0` to support GitHub Actions CI/CD runners, which use dynamic Azure IPs
