@@ -27,38 +27,38 @@ def _validate_product_form(mysql, form_data, current_product_id=None):
     errors = []
 
     if not form_data['name']:
-        errors.append('Product name is required.')
+        errors.append('validation.product.name_required')
 
     if not form_data['sku']:
-        errors.append('SKU is required.')
+        errors.append('validation.product.sku_required')
 
     try:
         price = float(form_data['price'])
         if price <= 0:
-            errors.append('Price must be greater than 0.')
+            errors.append('validation.product.price_positive')
     except (TypeError, ValueError):
-        errors.append('Price must be a valid number.')
+        errors.append('validation.product.price_invalid')
         price = None
 
     try:
         stock_quantity = int(form_data['stock_quantity'])
         if stock_quantity < 0:
-            errors.append('Stock quantity cannot be negative.')
+            errors.append('validation.product.stock_negative')
     except (TypeError, ValueError):
-        errors.append('Stock quantity must be a whole number.')
+        errors.append('validation.product.stock_invalid')
         stock_quantity = None
 
     try:
         minimum_stock_level = int(form_data['minimum_stock_level'])
         if minimum_stock_level < 0:
-            errors.append('Minimum stock must be 0 or more.')
+            errors.append('validation.product.min_stock_negative')
     except (TypeError, ValueError):
-        errors.append('Minimum stock level must be a whole number.')
+        errors.append('validation.product.min_stock_invalid')
         minimum_stock_level = None
 
     existing_product = get_product_by_sku(mysql, form_data['sku']) if form_data['sku'] else None
     if existing_product and existing_product[0] != current_product_id:
-        errors.append('SKU already exists. Use a unique SKU for each product.')
+        errors.append('validation.product.sku_duplicate')
 
     cleaned_data = {
         'name': form_data['name'],

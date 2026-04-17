@@ -218,6 +218,17 @@
       'action.edit': 'Edit',
       'action.review': 'Review',
       'action.view': 'View',
+
+      // Product validation errors
+      'validation.product.name_required': 'Product name is required.',
+      'validation.product.sku_required': 'SKU is required.',
+      'validation.product.price_positive': 'Price must be greater than 0.',
+      'validation.product.price_invalid': 'Price must be a valid number.',
+      'validation.product.stock_negative': 'Stock quantity cannot be negative.',
+      'validation.product.stock_invalid': 'Stock quantity must be a whole number.',
+      'validation.product.min_stock_negative': 'Minimum stock must be 0 or more.',
+      'validation.product.min_stock_invalid': 'Minimum stock level must be a whole number.',
+      'validation.product.sku_duplicate': 'SKU already exists. Use a unique SKU for each product.',
     },
 
     ja: {
@@ -430,6 +441,17 @@
       'action.edit': '編集',
       'action.review': '確認',
       'action.view': '表示',
+
+      // Product validation errors
+      'validation.product.name_required': '商品名を入力してください。',
+      'validation.product.sku_required': 'SKUを入力してください。',
+      'validation.product.price_positive': '価格は0より大きい値を入力してください。',
+      'validation.product.price_invalid': '価格に有効な数値を入力してください。',
+      'validation.product.stock_negative': '在庫数量は0以上で入力してください。',
+      'validation.product.stock_invalid': '在庫数量は整数で入力してください。',
+      'validation.product.min_stock_negative': '最低在庫数は0以上で入力してください。',
+      'validation.product.min_stock_invalid': '最低在庫数は整数で入力してください。',
+      'validation.product.sku_duplicate': 'このSKUはすでに使用されています。別のSKUを入力してください。',
     }
   };
 
