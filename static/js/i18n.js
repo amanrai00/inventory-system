@@ -483,10 +483,25 @@
     var numericCount = parseInt(count, 10);
 
     if (lang === 'ja') {
-      return '在庫切れの商品が' + numericCount + '件あります。';
+      return numericCount + ' 件';
     }
 
     return numericCount + ' item' + (numericCount !== 1 ? 's' : '') + ' out of stock';
+  }
+
+  function formatProductCount(count) {
+    var lang = getLang();
+    var numericCount = parseInt(count, 10);
+
+    if (isNaN(numericCount) || numericCount <= 0) {
+      return lang === 'ja' ? '結果なし' : 'No results';
+    }
+
+    if (lang === 'ja') {
+      return numericCount + ' 件';
+    }
+
+    return numericCount + ' item' + (numericCount !== 1 ? 's' : '');
   }
 
   function applyTranslations() {
@@ -535,6 +550,10 @@
 
     document.querySelectorAll('[data-dashboard-out-of-stock-count]').forEach(function (el) {
       el.textContent = formatDashboardOutOfStockCount(el.getAttribute('data-dashboard-out-of-stock-count'));
+    });
+
+    document.querySelectorAll('[data-product-count]').forEach(function (el) {
+      el.textContent = formatProductCount(el.getAttribute('data-product-count'));
     });
 
     document.querySelectorAll('[data-prediction-en]').forEach(function (el) {

@@ -74,7 +74,7 @@
     <p
       class="text-sm font-bold text-red-900"
       data-dashboard-out-of-stock-count="{{ out_of_stock_count }}"
-    >{{ out_of_stock_count }} item{% if out_of_stock_count != 1 %}s{% endif %} out of stock</p>
+    >{{ out_of_stock_count }} 件</p>
     <p class="mt-0.5 text-sm text-red-700" data-i18n="dashboard.alert.out_of_stock.sub">These need restocking before they can be sold.</p>
   </div>
   <a href="{{ url_for('products.list_products') }}?status=OUT+OF+STOCK" class="btn-secondary shrink-0 border-red-200 bg-white text-red-800 hover:bg-red-50 cursor-pointer">
