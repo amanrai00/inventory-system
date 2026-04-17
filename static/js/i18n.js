@@ -591,7 +591,6 @@
       btn.classList.toggle('lang-btn-active', isActive);
     });
 
-    document.body.classList.add('page-ready');
   }
 
   function initSwitcher() {
@@ -614,14 +613,18 @@
     apply: applyTranslations
   };
 
-  // Auto-apply on DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      applyTranslations();
-      initSwitcher();
-    });
-  } else {
+  // Auto-apply on DOM ready, then reveal page in the same frame
+  function boot() {
     applyTranslations();
     initSwitcher();
+    requestAnimationFrame(function () {
+      document.body.classList.add('page-ready');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
   }
 })();
