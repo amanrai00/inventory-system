@@ -549,6 +549,7 @@
         var lang = this.getAttribute('data-lang-btn');
         setLang(lang);
         applyTranslations();
+        fetch('/set-lang/' + lang);
       });
     });
   }

@@ -76,6 +76,13 @@ def login():
     )
 
 
+@auth_bp.route('/set-lang/<lang>')
+def set_lang(lang):
+    if lang in ('en', 'ja'):
+        session['lang'] = lang
+    return '', 204
+
+
 @auth_bp.route('/logout')
 def logout():
     session.clear()

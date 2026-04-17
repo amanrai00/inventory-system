@@ -13,3 +13,13 @@ design-system/
 app.log
 # Added by code-review-graph
 .code-review-graph/
+
+# Local AI/editor tooling
+.cursorrules
+.kiro/
+.mcp.json
+.opencode.json
+.windsurfrules
+AGENTS.md
+CLAUDE.md
+GEMINI.md
