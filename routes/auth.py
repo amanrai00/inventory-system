@@ -95,7 +95,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get('user_role') != 'admin':
-            flash('管理者のみアクセス権限がありません。' if session.get('lang') == 'ja' or request.cookies.get('lang') == 'ja' else 'You do not have permission to access this page.', 'danger')
+            flash('管理者のみアクセス権限がありません。' if (session.get('lang') == 'ja' or request.cookies.get('lang') == 'ja') else 'You do not have permission to access this page.', 'danger')
             return redirect(url_for('products.list_products'))
         return f(*args, **kwargs)
     return decorated_function

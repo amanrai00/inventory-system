@@ -601,6 +601,7 @@
         setLang(lang);
         applyTranslations();
         fetch('/set-lang/' + lang);
+        document.cookie = 'lang=' + lang + '; path=/';
       });
     });
   }
