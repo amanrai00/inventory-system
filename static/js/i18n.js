@@ -219,7 +219,7 @@
     ja: {
       // Brand
       'brand.name': '在庫管理システム',
-      'brand.tagline': '管理',
+      'brand.tagline': '在庫管理',
 
       // Nav
       'nav.menu': 'メニュー',
@@ -228,7 +228,7 @@
       'nav.add_product': '商品追加',
       'nav.record_sale': '売上登録',
       'nav.sales_history': '売上履歴',
-      'nav.sign_out': 'サインアウト',
+      'nav.sign_out': 'ログアウト',
 
       // Footer
       'footer.name': '在庫管理システム',
@@ -238,15 +238,15 @@
       'a11y.skip': 'メインコンテンツへスキップ',
 
       // Login page
-      'login.title': 'サインイン - 在庫管理システム',
-      'login.heading': 'サインイン',
-      'login.subheading': '認証情報を入力してください。',
+      'login.title': 'ログイン - 在庫管理システム',
+      'login.heading': 'ログイン',
+      'login.subheading': 'メールアドレスとパスワードを入力してください。',
       'login.email': 'メールアドレス',
-      'login.email.placeholder': 'you@company.com',
+      'login.email.placeholder': 'you@example.com',
       'login.password': 'パスワード',
-      'login.password.placeholder': 'パスワードを入力',
-      'login.submit': 'サインイン',
-      'login.footer': 'アクセスに問題がある場合は管理者にお問い合わせください。',
+      'login.password.placeholder': 'パスワードを入力してください',
+      'login.submit': 'ログイン',
+      'login.footer': 'ログインできない場合は管理者にご連絡ください。',
       'login.lang.label': '言語',
 
       // Validation — login
