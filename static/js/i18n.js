@@ -487,13 +487,7 @@
     document.querySelectorAll('[data-lang-btn]').forEach(function (btn) {
       var isActive = btn.getAttribute('data-lang-btn') === lang;
       btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-      if (isActive) {
-        btn.classList.add('lang-btn-active');
-        btn.classList.remove('lang-btn-inactive');
-      } else {
-        btn.classList.remove('lang-btn-active');
-        btn.classList.add('lang-btn-inactive');
-      }
+      btn.classList.toggle('lang-btn-active', isActive);
     });
   }
 

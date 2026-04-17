@@ -22,16 +22,39 @@
     }
   </script>
   <style>
+    .lang-switcher {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.06);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .lang-btn {
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: none;
+      cursor: pointer;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+      color: #64748b;
+      background: transparent;
+    }
+    .lang-btn:hover:not(.lang-btn-active) {
+      color: #0f172a;
+      background: rgba(15, 23, 42, 0.05);
+    }
     .lang-btn-active {
-      background-color: rgb(15 23 42);
-      color: #fff;
+      background: #0f172a;
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
     }
-    .lang-btn-inactive {
-      background-color: transparent;
-      color: rgb(100 116 139);
-    }
-    .lang-btn-inactive:hover {
-      color: rgb(15 23 42);
+    .lang-btn:focus-visible {
+      outline: 2px solid #0d9488;
+      outline-offset: 2px;
     }
   </style>
 </head>
@@ -40,20 +63,11 @@
     <div class="w-full max-w-sm">
 
       <!-- Language switcher -->
-      <div class="mb-5 flex items-center justify-end gap-1">
-        <span class="text-[11px] font-medium text-slate-400 mr-1.5" data-i18n="login.lang.label">Language</span>
-        <button
-          data-lang-btn="en"
-          aria-pressed="true"
-          class="lang-btn-active rounded-lg px-2.5 py-1 text-xs font-bold transition-colors duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400">
-          EN
-        </button>
-        <button
-          data-lang-btn="ja"
-          aria-pressed="false"
-          class="lang-btn-inactive rounded-lg px-2.5 py-1 text-xs font-bold transition-colors duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400">
-          日本語
-        </button>
+      <div class="mb-5 flex items-center justify-end">
+        <div class="lang-switcher" role="group" aria-label="Language">
+          <button data-lang-btn="en" aria-pressed="true" class="lang-btn lang-btn-active">EN</button>
+          <button data-lang-btn="ja" aria-pressed="false" class="lang-btn">日本語</button>
+        </div>
       </div>
 
       <!-- Brand -->
