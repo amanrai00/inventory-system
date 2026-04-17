@@ -44,6 +44,8 @@
       // Validation — login
       'login.error.email_required': 'Email is required.',
       'login.error.password_required': 'Password is required.',
+      'login.error.invalid_credentials': 'Invalid email or password.',
+      'login.message.logged_out': 'You have been logged out.',
 
       // Dashboard
       'dashboard.title': 'Dashboard - Inventory System',
@@ -250,8 +252,10 @@
       'login.lang.label': '言語',
 
       // Validation — login
-      'login.error.email_required': 'メールアドレスは必須です。',
-      'login.error.password_required': 'パスワードは必須です。',
+      'login.error.email_required': '\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
+      'login.error.password_required': '\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
+      'login.error.invalid_credentials': '\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9\u307e\u305f\u306f\u30d1\u30b9\u30ef\u30fc\u30c9\u304c\u6b63\u3057\u304f\u3042\u308a\u307e\u305b\u3093\u3002',
+      'login.message.logged_out': '\u30ed\u30b0\u30a2\u30a6\u30c8\u3057\u307e\u3057\u305f\u3002',
 
       // Dashboard
       'dashboard.title': 'ダッシュボード - 在庫管理システム',
