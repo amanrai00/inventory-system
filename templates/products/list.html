@@ -114,6 +114,7 @@
           <td class="px-5 py-3">
             {% if session.get('role') == 'admin' %}
             <a href="{{ url_for('products.edit_product', id=product.id) }}" class="btn-ghost table-action cursor-pointer" data-i18n="products.btn.edit">Edit</a>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
