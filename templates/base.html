@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Inventory System{% endblock %}</title>
+  <title data-i18n="{% block i18n_title_key %}{% endblock %}">{% block title %}Inventory System{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,8 @@
 </head>
 <body class="font-sans antialiased text-slate-950">
   <a href="#main-content"
-     class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg focus:bg-teal-700 focus:text-white focus:text-sm focus:font-semibold">
+     class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg focus:bg-teal-700 focus:text-white focus:text-sm focus:font-semibold"
+     data-i18n="a11y.skip">
     Skip to main content
   </a>
 
@@ -45,8 +46,8 @@
             </svg>
           </span>
           <span class="min-w-0">
-            <span class="block text-sm font-bold text-white tracking-tight leading-tight">Inventory System</span>
-            <span class="block text-[10px] text-slate-500 uppercase tracking-widest mt-0.5">Management</span>
+            <span class="block text-sm font-bold text-white tracking-tight leading-tight" data-i18n="brand.name">Inventory System</span>
+            <span class="block text-[10px] text-slate-500 uppercase tracking-widest mt-0.5" data-i18n="brand.tagline">Management</span>
           </span>
         </a>
 
@@ -71,7 +72,7 @@
       <div id="sidebar-nav" class="hidden lg:flex lg:flex-col lg:flex-1 lg:overflow-y-auto">
 
         <nav class="flex-1 px-3 py-4" aria-label="Main navigation">
-          <p class="px-3 mb-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Menu</p>
+          <p class="px-3 mb-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest" data-i18n="nav.menu">Menu</p>
           <ul class="space-y-0.5" role="list">
             <li>
               <a href="{{ url_for('dashboard.dashboard') }}"
@@ -81,7 +82,7 @@
                   <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/>
                   <rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
                 </svg>
-                <span>Dashboard</span>
+                <span data-i18n="nav.dashboard">Dashboard</span>
               </a>
             </li>
             <li>
@@ -92,7 +93,7 @@
                   <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
                   <path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
                 </svg>
-                <span>Products</span>
+                <span data-i18n="nav.products">Products</span>
               </a>
             </li>
             <li>
@@ -102,7 +103,7 @@
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/>
                 </svg>
-                <span>Add Product</span>
+                <span data-i18n="nav.add_product">Add Product</span>
               </a>
             </li>
             <li>
@@ -113,7 +114,7 @@
                   <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
                   <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
                 </svg>
-                <span>Record Sale</span>
+                <span data-i18n="nav.record_sale">Record Sale</span>
               </a>
             </li>
             <li>
@@ -124,7 +125,7 @@
                   <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/>
                   <path d="M12 7v5l4 2"/>
                 </svg>
-                <span>Sales History</span>
+                <span data-i18n="nav.sales_history">Sales History</span>
               </a>
             </li>
           </ul>
@@ -143,6 +144,7 @@
               </div>
             </div>
             <a href="{{ url_for('auth.logout') }}"
+               data-i18n-aria="nav.sign_out"
                title="Sign out"
                aria-label="Sign out"
                class="flex-shrink-0 rounded-lg border border-white/10 bg-white/5 p-1.5 text-slate-400 transition-colors hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer">
@@ -165,8 +167,8 @@
       <header class="app-topbar sticky top-0 z-30 border-b border-slate-200/60 px-4 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="page-head-mark">
-            <p class="eyebrow">{% block page_eyebrow %}Overview{% endblock %}</p>
-            <h1 class="mt-1.5 text-xl sm:text-2xl font-bold tracking-tight text-slate-950">{% block page_title %}{% endblock %}</h1>
+            <p class="eyebrow" data-i18n="{% block page_eyebrow_key %}{% endblock %}">{% block page_eyebrow %}Overview{% endblock %}</p>
+            <h1 class="mt-1.5 text-xl sm:text-2xl font-bold tracking-tight text-slate-950" data-i18n="{% block page_title_key %}{% endblock %}">{% block page_title %}{% endblock %}</h1>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             {% block page_actions %}{% endblock %}
@@ -214,13 +216,14 @@
 
       <footer class="px-4 pb-5 pt-2 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl surface-panel rounded-xl px-5 py-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-xs text-slate-500">
-          <span class="font-semibold text-slate-700">Inventory System</span>
-          <span>Stock control &middot; Products &middot; Sales</span>
+          <span class="font-semibold text-slate-700" data-i18n="footer.name">Inventory System</span>
+          <span data-i18n="footer.tagline">Stock control &middot; Products &middot; Sales</span>
         </div>
       </footer>
     </div>
   </div>
 
+  <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
   <script>
     // Active nav link
@@ -247,5 +250,6 @@
       });
     })();
   </script>
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

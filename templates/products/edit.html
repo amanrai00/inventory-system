@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}Edit Product - Inventory System{% endblock %}
+{% block i18n_title_key %}edit_product.title{% endblock %}
 {% block page_eyebrow %}Catalog{% endblock %}
+{% block page_eyebrow_key %}edit_product.eyebrow{% endblock %}
 {% block page_title %}Edit Product{% endblock %}
+{% block page_title_key %}edit_product.page_title{% endblock %}
 
 {% block content %}
 <div class="form-shell xl:grid-cols-[minmax(0,1fr)_260px]">
@@ -10,21 +13,21 @@
   <!-- Form card -->
   <div class="surface-panel rounded-2xl overflow-hidden">
     <div class="border-b border-slate-200/60 px-5 py-5">
-      <div class="section-kicker"><p class="eyebrow">Edit Product</p></div>
+      <div class="section-kicker"><p class="eyebrow" data-i18n="edit_product.section.eyebrow">Edit Product</p></div>
       <h3 class="mt-1.5 text-lg font-bold text-slate-950">{{ form_data.name }}</h3>
     </div>
 
     <form method="POST" action="{{ url_for('products.edit_product', id=product[0]) }}" data-custom-validation novalidate>
       <div class="px-5 py-5 space-y-4">
         <div>
-          <label for="name" class="field-label">Product Name</label>
+          <label for="name" class="field-label" data-i18n="edit_product.field.name">Product Name</label>
           <input type="text" class="form-field field-input" id="name" name="name" value="{{ form_data.name }}"
             required data-required-message="Product name is required">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
         </div>
 
         <div>
-          <label for="sku" class="field-label">SKU</label>
+          <label for="sku" class="field-label" data-i18n="edit_product.field.sku">SKU</label>
           <input type="text" class="form-field field-input" id="sku" name="sku" value="{{ form_data.sku }}"
             required data-required-message="SKU is required">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
@@ -32,14 +35,14 @@
 
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
-            <label for="price" class="field-label">Price ($)</label>
+            <label for="price" class="field-label" data-i18n="edit_product.field.price">Price ($)</label>
             <input type="number" step="0.01" min="0.01" class="form-field field-input" id="price" name="price" value="{{ form_data.price }}"
               required data-required-message="Price is required" data-range-message="Price must be greater than 0">
             <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
           </div>
 
           <div>
-            <label for="stock_quantity" class="field-label">Stock Quantity</label>
+            <label for="stock_quantity" class="field-label" data-i18n="edit_product.field.stock_qty">Stock Quantity</label>
             <input type="number" min="0" class="form-field field-input" id="stock_quantity" name="stock_quantity" value="{{ form_data.stock_quantity }}"
               required data-required-message="Stock quantity is required" data-range-message="Stock quantity cannot be negative">
             <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
@@ -47,28 +50,28 @@
         </div>
 
         <div>
-          <label for="minimum_stock_level" class="field-label">Minimum Stock Level</label>
+          <label for="minimum_stock_level" class="field-label" data-i18n="edit_product.field.min_stock">Minimum Stock Level</label>
           <input type="number" min="0" class="form-field field-input" id="minimum_stock_level" name="minimum_stock_level" value="{{ form_data.minimum_stock_level }}"
             required data-required-message="Minimum stock level is required" data-range-message="Minimum stock must be 0 or more">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
-          <p class="mt-1.5 text-xs text-slate-500">Stock alerts trigger when on-hand quantity falls below this.</p>
+          <p class="mt-1.5 text-xs text-slate-500" data-i18n="edit_product.field.min_stock.hint">Stock alerts trigger when on-hand quantity falls below this.</p>
         </div>
       </div>
 
       <div class="flex flex-wrap items-center gap-3 border-t border-slate-200/60 bg-slate-50/60 px-5 py-4">
-        <button type="submit" class="btn-primary cursor-pointer">Save Changes</button>
-        <a href="{{ url_for('products.list_products') }}" class="btn-secondary cursor-pointer">Cancel</a>
+        <button type="submit" class="btn-primary cursor-pointer" data-i18n="edit_product.btn.submit">Save Changes</button>
+        <a href="{{ url_for('products.list_products') }}" class="btn-secondary cursor-pointer" data-i18n="edit_product.btn.cancel">Cancel</a>
       </div>
     </form>
   </div>
 
   <!-- Sidebar tips -->
   <aside class="form-sidebar-note self-start">
-    <p class="text-sm font-bold text-slate-900 mb-3">Things to check</p>
+    <p class="text-sm font-bold text-slate-900 mb-3" data-i18n="edit_product.tips.heading">Things to check</p>
     <div class="space-y-3 text-sm text-slate-600">
-      <p><span class="font-semibold text-slate-800">Stock quantity</span> — Should match the actual count on your shelves.</p>
-      <p><span class="font-semibold text-slate-800">Min stock</span> — Raise it if alerts are coming too late, lower it if they're too noisy.</p>
-      <p><span class="font-semibold text-slate-800">Price</span> — Update if the sale price has changed.</p>
+      <p><span class="font-semibold text-slate-800" data-i18n="edit_product.field.stock_qty">Stock quantity</span> <span data-i18n="edit_product.tips.stock_qty">— Should match the actual count on your shelves.</span></p>
+      <p><span class="font-semibold text-slate-800" data-i18n="edit_product.field.min_stock">Min stock</span> <span data-i18n="edit_product.tips.min_stock">— Raise it if alerts are coming too late, lower it if they're too noisy.</span></p>
+      <p><span class="font-semibold text-slate-800" data-i18n="edit_product.field.price">Price</span> <span data-i18n="edit_product.tips.price">— Update if the sale price has changed.</span></p>
     </div>
   </aside>
 </div>

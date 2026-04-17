@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 
 {% block title %}Dashboard - Inventory System{% endblock %}
+{% block i18n_title_key %}dashboard.title{% endblock %}
 {% block page_eyebrow %}Overview{% endblock %}
+{% block page_eyebrow_key %}dashboard.eyebrow{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
+{% block page_title_key %}dashboard.page_title{% endblock %}
 
 {% block page_actions %}
 <a href="{{ url_for('products.add_product_route') }}" class="btn-primary">
   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-  Add Product
+  <span data-i18n="dashboard.btn.add_product">Add Product</span>
 </a>
 <a href="{{ url_for('sales.record') }}" class="btn-secondary">
   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-  Record Sale
+  <span data-i18n="dashboard.btn.record_sale">Record Sale</span>
 </a>
 {% endblock %}
 
@@ -24,10 +27,10 @@
       <div class="metric-icon bg-teal-50 text-teal-700">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
       </div>
-      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Products</span>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400" data-i18n="dashboard.metric.products">Products</span>
     </div>
     <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ total_products }}</p>
-    <p class="mt-1.5 text-sm font-semibold text-slate-700">Total Products</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700" data-i18n="dashboard.metric.total_products">Total Products</p>
   </a>
 
   <a href="{{ url_for('products.list_products') }}?status=LOW+STOCK" class="surface-panel metric-card rounded-2xl p-5">
@@ -35,10 +38,10 @@
       <div class="metric-icon bg-amber-50 text-amber-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
       </div>
-      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Watch</span>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400" data-i18n="dashboard.metric.watch">Watch</span>
     </div>
     <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ low_stock_count }}</p>
-    <p class="mt-1.5 text-sm font-semibold text-slate-700">Low Stock</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700" data-i18n="dashboard.metric.low_stock">Low Stock</p>
   </a>
 
   <a href="{{ url_for('products.list_products') }}?status=OUT+OF+STOCK" class="surface-panel metric-card rounded-2xl p-5">
@@ -46,10 +49,10 @@
       <div class="metric-icon bg-red-50 text-red-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
       </div>
-      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Critical</span>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400" data-i18n="dashboard.metric.critical">Critical</span>
     </div>
     <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ out_of_stock_count }}</p>
-    <p class="mt-1.5 text-sm font-semibold text-slate-700">Out of Stock</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700" data-i18n="dashboard.metric.out_of_stock">Out of Stock</p>
   </a>
 
   <a href="{{ url_for('sales.history') }}" class="surface-panel metric-card rounded-2xl p-5">
@@ -57,10 +60,10 @@
       <div class="metric-icon bg-slate-100 text-slate-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
       </div>
-      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Sales</span>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400" data-i18n="dashboard.metric.sales">Sales</span>
     </div>
     <p class="mt-5 text-4xl font-bold text-slate-950 tracking-tight">{{ total_sales }}</p>
-    <p class="mt-1.5 text-sm font-semibold text-slate-700">Total Sales</p>
+    <p class="mt-1.5 text-sm font-semibold text-slate-700" data-i18n="dashboard.metric.total_sales">Total Sales</p>
   </a>
 </div>
 
@@ -71,7 +74,9 @@
     <p class="text-sm font-bold text-red-900">{{ out_of_stock_count }} item{% if out_of_stock_count != 1 %}s{% endif %} out of stock</p>
     <p class="mt-0.5 text-sm text-red-700">These need restocking before they can be sold.</p>
   </div>
-  <a href="{{ url_for('products.list_products') }}?status=OUT+OF+STOCK" class="btn-secondary shrink-0 border-red-200 bg-white text-red-800 hover:bg-red-50 cursor-pointer">Review</a>
+  <a href="{{ url_for('products.list_products') }}?status=OUT+OF+STOCK" class="btn-secondary shrink-0 border-red-200 bg-white text-red-800 hover:bg-red-50 cursor-pointer">
+    <span data-i18n="dashboard.alert.out_of_stock.btn">Review</span>
+  </a>
 </div>
 {% elif low_stock_count > 0 %}
 <div class="mb-5 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
@@ -79,15 +84,19 @@
     <p class="text-sm font-bold text-amber-900">{{ low_stock_count }} item{% if low_stock_count != 1 %}s{% endif %} running low</p>
     <p class="mt-0.5 text-sm text-amber-700">Consider restocking soon to avoid going out of stock.</p>
   </div>
-  <a href="{{ url_for('products.list_products') }}?status=LOW+STOCK" class="btn-secondary shrink-0 border-amber-200 bg-white text-amber-900 hover:bg-amber-50 cursor-pointer">View</a>
+  <a href="{{ url_for('products.list_products') }}?status=LOW+STOCK" class="btn-secondary shrink-0 border-amber-200 bg-white text-amber-900 hover:bg-amber-50 cursor-pointer">
+    <span data-i18n="dashboard.alert.low_stock.btn">View</span>
+  </a>
 </div>
 {% else %}
 <div class="mb-5 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
   <div>
-    <p class="text-sm font-bold text-emerald-900">Stock levels are healthy</p>
-    <p class="mt-0.5 text-sm text-emerald-700">All products are above their minimum thresholds.</p>
+    <p class="text-sm font-bold text-emerald-900" data-i18n="dashboard.alert.healthy.heading">Stock levels are healthy</p>
+    <p class="mt-0.5 text-sm text-emerald-700" data-i18n="dashboard.alert.healthy.sub">All products are above their minimum thresholds.</p>
   </div>
-  <a href="{{ url_for('products.list_products') }}" class="btn-secondary shrink-0 border-emerald-200 bg-white text-emerald-900 hover:bg-emerald-50 cursor-pointer">View Inventory</a>
+  <a href="{{ url_for('products.list_products') }}" class="btn-secondary shrink-0 border-emerald-200 bg-white text-emerald-900 hover:bg-emerald-50 cursor-pointer">
+    <span data-i18n="dashboard.alert.healthy.btn">View Inventory</span>
+  </a>
 </div>
 {% endif %}
 
@@ -98,8 +107,8 @@
   <div class="surface-panel rounded-2xl p-5 sm:p-6">
     <div class="flex items-center justify-between gap-3 mb-4">
       <div>
-        <div class="section-kicker"><p class="eyebrow">Inventory</p></div>
-        <h3 class="mt-1.5 text-lg font-bold text-slate-950">Stock breakdown</h3>
+        <div class="section-kicker"><p class="eyebrow" data-i18n="dashboard.stock.eyebrow">Inventory</p></div>
+        <h3 class="mt-1.5 text-lg font-bold text-slate-950" data-i18n="dashboard.stock.heading">Stock breakdown</h3>
       </div>
     </div>
     <div class="flex flex-wrap gap-3">
@@ -123,26 +132,26 @@
 
   <!-- Quick actions -->
   <div class="surface-panel rounded-2xl p-5 sm:p-6">
-    <div class="section-kicker mb-4"><p class="eyebrow">Quick Actions</p></div>
+    <div class="section-kicker mb-4"><p class="eyebrow" data-i18n="dashboard.quick_actions.eyebrow">Quick Actions</p></div>
     <div class="space-y-2.5">
       <a href="{{ url_for('products.add_product_route') }}" class="btn-primary w-full justify-between cursor-pointer">
         <span class="flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-          Add Product
+          <span data-i18n="dashboard.btn.add_product">Add Product</span>
         </span>
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
       <a href="{{ url_for('sales.record') }}" class="btn-secondary w-full justify-between cursor-pointer">
         <span class="flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          Record Sale
+          <span data-i18n="dashboard.btn.record_sale">Record Sale</span>
         </span>
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
       <a href="{{ url_for('products.list_products') }}" class="btn-secondary w-full justify-between cursor-pointer">
         <span class="flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-          View Inventory
+          <span data-i18n="dashboard.quick_actions.view_inventory">View Inventory</span>
         </span>
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
@@ -157,10 +166,10 @@
   <div class="surface-panel table-shell xl:col-span-3">
     <div class="flex items-center justify-between gap-3 border-b border-slate-200/60 px-5 py-4">
       <div>
-        <div class="section-kicker"><p class="eyebrow">Needs Attention</p></div>
-        <h3 class="mt-1.5 text-base font-bold text-slate-950">Low & out of stock</h3>
+        <div class="section-kicker"><p class="eyebrow" data-i18n="dashboard.critical.eyebrow">Needs Attention</p></div>
+        <h3 class="mt-1.5 text-base font-bold text-slate-950" data-i18n="dashboard.critical.heading">Low &amp; out of stock</h3>
       </div>
-      <a href="{{ url_for('products.list_products') }}" class="btn-ghost cursor-pointer">All Products</a>
+      <a href="{{ url_for('products.list_products') }}" class="btn-ghost cursor-pointer" data-i18n="dashboard.critical.btn_all">All Products</a>
     </div>
 
     {% if critical_items %}
@@ -168,11 +177,11 @@
       <table class="data-table w-full text-sm">
         <thead>
           <tr class="bg-slate-50/70 border-b border-slate-200/60">
-            <th class="px-5 py-3 text-left">Product</th>
-            <th class="px-5 py-3 text-left">SKU</th>
-            <th class="px-5 py-3 text-left">Stock</th>
-            <th class="px-5 py-3 text-left">Min</th>
-            <th class="px-5 py-3 text-left">Status</th>
+            <th class="px-5 py-3 text-left" data-i18n="dashboard.critical.th_product">Product</th>
+            <th class="px-5 py-3 text-left" data-i18n="dashboard.critical.th_sku">SKU</th>
+            <th class="px-5 py-3 text-left" data-i18n="dashboard.critical.th_stock">Stock</th>
+            <th class="px-5 py-3 text-left" data-i18n="dashboard.critical.th_min">Min</th>
+            <th class="px-5 py-3 text-left" data-i18n="dashboard.critical.th_status">Status</th>
             <th class="px-5 py-3 text-left"></th>
           </tr>
         </thead>
@@ -187,13 +196,13 @@
             <td class="px-5 py-3 text-slate-500">{{ item.minimum_stock_level }}</td>
             <td class="px-5 py-3">
               {% if item.status == 'OUT OF STOCK' %}
-                <span class="status-pill status-pill-danger">Out of Stock</span>
+                <span class="status-pill status-pill-danger" data-i18n="status.out_of_stock">Out of Stock</span>
               {% else %}
-                <span class="status-pill status-pill-warning">Low Stock</span>
+                <span class="status-pill status-pill-warning" data-i18n="status.low_stock">Low Stock</span>
               {% endif %}
             </td>
             <td class="px-5 py-3">
-              <a href="{{ url_for('products.edit_product', id=item.id) }}" class="btn-ghost table-action cursor-pointer">Edit</a>
+              <a href="{{ url_for('products.edit_product', id=item.id) }}" class="btn-ghost table-action cursor-pointer" data-i18n="action.edit">Edit</a>
             </td>
           </tr>
           {% endfor %}
@@ -203,8 +212,8 @@
     {% else %}
     <div class="empty-state">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-      <p class="mt-3 text-sm font-semibold text-slate-800">Everything looks good.</p>
-      <p class="mt-1 text-sm text-slate-500">No products below their minimum threshold.</p>
+      <p class="mt-3 text-sm font-semibold text-slate-800" data-i18n="dashboard.critical.empty_heading">Everything looks good.</p>
+      <p class="mt-1 text-sm text-slate-500" data-i18n="dashboard.critical.empty_sub">No products below their minimum threshold.</p>
     </div>
     {% endif %}
   </div>
@@ -213,10 +222,10 @@
   <div class="surface-panel table-shell xl:col-span-2">
     <div class="flex items-center justify-between gap-3 border-b border-slate-200/60 px-5 py-4">
       <div>
-        <div class="section-kicker"><p class="eyebrow">Recent</p></div>
-        <h3 class="mt-1.5 text-base font-bold text-slate-950">Latest sales</h3>
+        <div class="section-kicker"><p class="eyebrow" data-i18n="dashboard.recent.eyebrow">Recent</p></div>
+        <h3 class="mt-1.5 text-base font-bold text-slate-950" data-i18n="dashboard.recent.heading">Latest sales</h3>
       </div>
-      <a href="{{ url_for('sales.history') }}" class="btn-ghost cursor-pointer">All Sales</a>
+      <a href="{{ url_for('sales.history') }}" class="btn-ghost cursor-pointer" data-i18n="dashboard.recent.btn_all">All Sales</a>
     </div>
 
     {% if recent_sales %}
@@ -234,8 +243,8 @@
     {% else %}
     <div class="empty-state">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-      <p class="mt-3 text-sm font-semibold text-slate-800">No sales yet.</p>
-      <p class="mt-1 text-sm text-slate-500">Record your first sale to see it here.</p>
+      <p class="mt-3 text-sm font-semibold text-slate-800" data-i18n="dashboard.recent.empty_heading">No sales yet.</p>
+      <p class="mt-1 text-sm text-slate-500" data-i18n="dashboard.recent.empty_sub">Record your first sale to see it here.</p>
     </div>
     {% endif %}
   </div>
@@ -245,8 +254,8 @@
 <div class="surface-panel mt-6">
   <div class="flex items-center justify-between gap-3 border-b border-slate-200/60 px-5 py-4">
     <div>
-      <div class="section-kicker"><p class="eyebrow">Powered by Amazon Bedrock</p></div>
-      <h3 class="mt-1.5 text-base font-bold text-slate-950">AI Restock Recommendations</h3>
+      <div class="section-kicker"><p class="eyebrow" data-i18n="dashboard.ai.eyebrow">Powered by Amazon Bedrock</p></div>
+      <h3 class="mt-1.5 text-base font-bold text-slate-950" data-i18n="dashboard.ai.heading">AI Restock Recommendations</h3>
     </div>
   </div>
   {% if ai_predictions %}
@@ -258,14 +267,16 @@
         <p class="mt-0.5 text-xs text-slate-400">{{ p.predicted_at }}</p>
         <p class="mt-1 text-sm text-slate-600">{{ p.reasoning }}</p>
       </div>
-      <span class="status-pill status-pill-warning shrink-0">Restock {{ p.recommended_restock_qty }} units</span>
+      <span class="status-pill status-pill-warning shrink-0">
+        <span data-i18n="status.restock">Restock</span> {{ p.recommended_restock_qty }} <span data-i18n="status.units">units</span>
+      </span>
     </div>
     {% endfor %}
   </div>
   {% else %}
   <div class="empty-state">
-    <p class="mt-3 text-sm font-semibold text-slate-800">No predictions yet.</p>
-    <p class="mt-1 text-sm text-slate-500">Run <code>python3 scripts/predict.py</code> to generate them.</p>
+    <p class="mt-3 text-sm font-semibold text-slate-800" data-i18n="dashboard.ai.empty_heading">No predictions yet.</p>
+    <p class="mt-1 text-sm text-slate-500" data-i18n="dashboard.ai.empty_sub">Run <code>python3 scripts/predict.py</code> to generate them.</p>
   </div>
   {% endif %}
 </div>

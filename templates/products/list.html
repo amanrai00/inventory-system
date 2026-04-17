@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}Products - Inventory System{% endblock %}
+{% block i18n_title_key %}products.title{% endblock %}
 {% block page_eyebrow %}Catalog{% endblock %}
+{% block page_eyebrow_key %}products.eyebrow{% endblock %}
 {% block page_title %}Products{% endblock %}
+{% block page_title_key %}products.page_title{% endblock %}
 
 {% block page_actions %}
 <a href="{{ url_for('products.add_product_route') }}" class="btn-primary cursor-pointer">
   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-  Add Product
+  <span data-i18n="products.btn.add">Add Product</span>
 </a>
 {% endblock %}
 
@@ -18,31 +21,34 @@
   <div class="border-b border-slate-200/60 px-5 py-5">
     <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
       <div>
-        <div class="section-kicker"><p class="eyebrow">All Products</p></div>
+        <div class="section-kicker"><p class="eyebrow" data-i18n="products.filter.eyebrow">All Products</p></div>
         <h3 class="mt-1.5 text-lg font-bold text-slate-950">
           {% if products %}{{ products|length }} item{% if products|length != 1 %}s{% endif %}{% else %}No results{% endif %}
         </h3>
       </div>
       <form method="GET" action="{{ url_for('products.list_products') }}" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_200px_auto]">
         <div>
-          <label for="search" class="field-label">Search</label>
-          <input type="text" class="field-input" id="search" name="search" placeholder="Name or SKU" value="{{ filters.search }}">
+          <label for="search" class="field-label" data-i18n="products.filter.search.label">Search</label>
+          <input type="text" class="field-input" id="search" name="search"
+            placeholder="Name or SKU"
+            data-i18n-placeholder="products.filter.search.placeholder"
+            value="{{ filters.search }}">
         </div>
         <div>
-          <label for="status" class="field-label">Status</label>
+          <label for="status" class="field-label" data-i18n="products.filter.status.label">Status</label>
           <select class="field-select" id="status" name="status">
-            <option value="ALL" {% if filters.status == 'ALL' %}selected{% endif %}>All Statuses</option>
-            <option value="NORMAL" {% if filters.status == 'NORMAL' %}selected{% endif %}>Normal</option>
-            <option value="LOW STOCK" {% if filters.status == 'LOW STOCK' %}selected{% endif %}>Low Stock</option>
-            <option value="OUT OF STOCK" {% if filters.status == 'OUT OF STOCK' %}selected{% endif %}>Out of Stock</option>
+            <option value="ALL" {% if filters.status == 'ALL' %}selected{% endif %} data-i18n="products.filter.status.all">All Statuses</option>
+            <option value="NORMAL" {% if filters.status == 'NORMAL' %}selected{% endif %} data-i18n="products.filter.status.normal">Normal</option>
+            <option value="LOW STOCK" {% if filters.status == 'LOW STOCK' %}selected{% endif %} data-i18n="products.filter.status.low_stock">Low Stock</option>
+            <option value="OUT OF STOCK" {% if filters.status == 'OUT OF STOCK' %}selected{% endif %} data-i18n="products.filter.status.out_of_stock">Out of Stock</option>
           </select>
         </div>
         <div class="flex items-center gap-2 sm:items-end">
           <button type="submit" class="btn-primary flex-1 sm:flex-none cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            Filter
+            <span data-i18n="products.filter.btn.filter">Filter</span>
           </button>
-          <a href="{{ url_for('products.list_products') }}" class="btn-secondary flex-1 sm:flex-none text-center cursor-pointer">Reset</a>
+          <a href="{{ url_for('products.list_products') }}" class="btn-secondary flex-1 sm:flex-none text-center cursor-pointer" data-i18n="products.filter.btn.reset">Reset</a>
         </div>
       </form>
     </div>
@@ -53,22 +59,22 @@
     <table class="data-table w-full text-sm">
       <thead>
         <tr class="bg-slate-50/70 border-b border-slate-200/60">
-          <th class="px-5 py-3 text-left">ID</th>
-          <th class="px-5 py-3 text-left">Name</th>
+          <th class="px-5 py-3 text-left" data-i18n="products.th.id">ID</th>
+          <th class="px-5 py-3 text-left" data-i18n="products.th.name">Name</th>
           {%- set cols = [
-            ('sku',               'SKU'),
-            ('price',             'Price'),
-            ('stock_quantity',    'Stock'),
-            ('minimum_stock_level','Min'),
-            ('status',            'Status'),
+            ('sku',               'SKU',   'products.th.sku'),
+            ('price',             'Price', 'products.th.price'),
+            ('stock_quantity',    'Stock', 'products.th.stock'),
+            ('minimum_stock_level','Min',  'products.th.min'),
+            ('status',            'Status','products.th.status'),
           ] %}
-          {% for col_key, col_label in cols %}
+          {% for col_key, col_label, col_i18n in cols %}
             {%- set next_dir = 'desc' if (filters.sort == col_key and filters.dir == 'asc') else 'asc' %}
             <th class="px-5 py-3 text-left">
               <a href="?search={{ filters.search }}&status={{ filters.status }}&sort={{ col_key }}&dir={{ next_dir }}"
                  class="inline-flex items-center gap-1 cursor-pointer hover:text-slate-700 transition-colors select-none
                         {% if filters.sort == col_key %}text-slate-700{% else %}text-slate-400{% endif %}">
-                {{ col_label }}
+                <span data-i18n="{{ col_i18n }}">{{ col_label }}</span>
                 {% if filters.sort == col_key %}
                 <span class="text-[10px] leading-none">
                   {% if filters.dir == 'asc' %}▲{% else %}▼{% endif %}
@@ -93,15 +99,15 @@
           <td class="px-5 py-3 text-slate-500">{{ product.minimum_stock_level }}</td>
           <td class="px-5 py-3">
             {% if product.status == 'OUT OF STOCK' %}
-              <span class="status-pill status-pill-danger">Out of Stock</span>
+              <span class="status-pill status-pill-danger" data-i18n="products.status.out_of_stock">Out of Stock</span>
             {% elif product.status == 'LOW STOCK' %}
-              <span class="status-pill status-pill-warning">Low Stock</span>
+              <span class="status-pill status-pill-warning" data-i18n="products.status.low_stock">Low Stock</span>
             {% else %}
-              <span class="status-pill status-pill-success">Normal</span>
+              <span class="status-pill status-pill-success" data-i18n="products.status.normal">Normal</span>
             {% endif %}
           </td>
           <td class="px-5 py-3">
-            <a href="{{ url_for('products.edit_product', id=product.id) }}" class="btn-ghost table-action cursor-pointer">Edit</a>
+            <a href="{{ url_for('products.edit_product', id=product.id) }}" class="btn-ghost table-action cursor-pointer" data-i18n="products.btn.edit">Edit</a>
           </td>
         </tr>
         {% endfor %}
@@ -111,8 +117,8 @@
   {% else %}
   <div class="empty-state">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-    <p class="mt-3 text-sm font-semibold text-slate-800">No products found.</p>
-    <p class="mt-1 text-sm text-slate-500">Try adjusting your search or status filter.</p>
+    <p class="mt-3 text-sm font-semibold text-slate-800" data-i18n="products.empty.heading">No products found.</p>
+    <p class="mt-1 text-sm text-slate-500" data-i18n="products.empty.sub">Try adjusting your search or status filter.</p>
   </div>
   {% endif %}
 </div>

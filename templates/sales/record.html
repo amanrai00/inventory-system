@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}Record Sale - Inventory System{% endblock %}
+{% block i18n_title_key %}record_sale.title{% endblock %}
 {% block page_eyebrow %}Sales{% endblock %}
+{% block page_eyebrow_key %}record_sale.eyebrow{% endblock %}
 {% block page_title %}Record Sale{% endblock %}
+{% block page_title_key %}record_sale.page_title{% endblock %}
 
 {% block content %}
 <div class="form-shell xl:grid-cols-[minmax(0,1fr)_260px]">
@@ -10,8 +13,8 @@
   <!-- Form card -->
   <div class="surface-panel rounded-2xl overflow-hidden">
     <div class="border-b border-slate-200/60 px-5 py-5">
-      <div class="section-kicker"><p class="eyebrow">New Sale</p></div>
-      <h3 class="mt-1.5 text-lg font-bold text-slate-950">Record a transaction</h3>
+      <div class="section-kicker"><p class="eyebrow" data-i18n="record_sale.section.eyebrow">New Sale</p></div>
+      <h3 class="mt-1.5 text-lg font-bold text-slate-950" data-i18n="record_sale.section.heading">Record a transaction</h3>
     </div>
 
     <form method="POST" action="{{ url_for('sales.record') }}" data-custom-validation novalidate id="sale-form">
@@ -22,7 +25,7 @@
 
         <!-- Searchable product picker -->
         <div>
-          <label for="product_search" class="field-label">Product</label>
+          <label for="product_search" class="field-label" data-i18n="record_sale.field.product">Product</label>
           <div class="relative" id="product-picker">
             <div class="relative">
               <input
@@ -30,6 +33,7 @@
                 id="product_search"
                 autocomplete="off"
                 placeholder="Search by name or SKU..."
+                data-i18n-placeholder="record_sale.field.product.placeholder"
                 class="field-input pr-9"
               >
               <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -57,16 +61,16 @@
                     <p class="text-xs text-slate-400 mt-0.5">{{ product[2] }}</p>
                   </div>
                   {% if product[4] == 0 %}
-                    <span class="status-pill status-pill-danger shrink-0">Out of Stock</span>
+                    <span class="status-pill status-pill-danger shrink-0" data-i18n="record_sale.status.out_of_stock">Out of Stock</span>
                   {% elif product[4] <= 5 %}
-                    <span class="status-pill status-pill-warning shrink-0">{{ product[4] }} left</span>
+                    <span class="status-pill status-pill-warning shrink-0">{{ product[4] }} <span data-i18n="record_sale.status.left">left</span></span>
                   {% else %}
-                    <span class="status-pill status-pill-success shrink-0">{{ product[4] }} in stock</span>
+                    <span class="status-pill status-pill-success shrink-0">{{ product[4] }} <span data-i18n="record_sale.status.in_stock">in stock</span></span>
                   {% endif %}
                 </div>
               </li>
               {% endfor %}
-              <li id="no-results" class="hidden px-4 py-3 text-sm text-slate-400 text-center">No products found.</li>
+              <li id="no-results" class="hidden px-4 py-3 text-sm text-slate-400 text-center" data-i18n="record_sale.no_results">No products found.</li>
             </ul>
           </div>
 
@@ -78,46 +82,50 @@
             </svg>
             <p class="text-sm font-semibold text-teal-800" id="selected-product-name"></p>
             <button type="button" id="clear-product"
-                    class="ml-auto text-teal-500 hover:text-teal-800 transition-colors cursor-pointer text-xs font-semibold">
+                    class="ml-auto text-teal-500 hover:text-teal-800 transition-colors cursor-pointer text-xs font-semibold"
+                    data-i18n="record_sale.btn.change">
               Change
             </button>
           </div>
-          <p id="product-error" class="hidden mt-1.5 text-xs font-semibold text-red-600">Please select a product.</p>
+          <p id="product-error" class="hidden mt-1.5 text-xs font-semibold text-red-600" data-i18n="record_sale.error.product">Please select a product.</p>
         </div>
 
         <!-- Quantity -->
         <div>
-          <label for="quantity_sold" class="field-label">Quantity Sold</label>
+          <label for="quantity_sold" class="field-label" data-i18n="record_sale.field.qty">Quantity Sold</label>
           <input type="number" min="1" class="form-field field-input" id="quantity_sold" name="quantity_sold"
-            value="{{ request.form.get('quantity_sold', '') }}" placeholder="1"
+            value="{{ request.form.get('quantity_sold', '') }}"
+            placeholder="1"
+            data-i18n-placeholder="record_sale.field.qty.placeholder"
             required data-required-message="Quantity is required" data-range-message="Quantity must be at least 1">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
           <!-- Live stock hint -->
           <p id="stock-hint" class="hidden mt-1.5 text-xs text-slate-500">
-            Available: <span id="stock-hint-qty" class="font-semibold text-slate-700"></span> units
+            <span data-i18n="record_sale.available">Available:</span> <span id="stock-hint-qty" class="font-semibold text-slate-700"></span> <span data-i18n="record_sale.units">units</span>
           </p>
         </div>
 
       </div>
 
       <div class="flex flex-wrap items-center gap-3 border-t border-slate-200/60 bg-slate-50/60 px-5 py-4">
-        <button type="submit" class="btn-primary cursor-pointer">Record Sale</button>
-        <a href="{{ url_for('sales.history') }}" class="btn-secondary cursor-pointer">Cancel</a>
+        <button type="submit" class="btn-primary cursor-pointer" data-i18n="record_sale.btn.submit">Record Sale</button>
+        <a href="{{ url_for('sales.history') }}" class="btn-secondary cursor-pointer" data-i18n="record_sale.btn.cancel">Cancel</a>
       </div>
     </form>
   </div>
 
   <!-- Sidebar tips -->
   <aside class="form-sidebar-note self-start">
-    <p class="text-sm font-bold text-slate-900 mb-3">Before you submit</p>
+    <p class="text-sm font-bold text-slate-900 mb-3" data-i18n="record_sale.tips.heading">Before you submit</p>
     <div class="space-y-3 text-sm text-slate-600">
-      <p><span class="font-semibold text-slate-800">Product</span> — Search by name or SKU. Stock level is shown in the dropdown.</p>
-      <p><span class="font-semibold text-slate-800">Quantity</span> — Can't exceed available stock. Whole numbers only.</p>
-      <p><span class="font-semibold text-slate-800">Duplicates</span> — Submit once and wait for confirmation.</p>
+      <p><span class="font-semibold text-slate-800" data-i18n="record_sale.field.product">Product</span> <span data-i18n="record_sale.tips.product">— Search by name or SKU. Stock level is shown in the dropdown.</span></p>
+      <p><span class="font-semibold text-slate-800" data-i18n="record_sale.field.qty">Quantity</span> <span data-i18n="record_sale.tips.qty">— Can't exceed available stock. Whole numbers only.</span></p>
+      <p><span class="font-semibold text-slate-800">Duplicates</span> <span data-i18n="record_sale.tips.duplicates">— Submit once and wait for confirmation.</span></p>
     </div>
   </aside>
 </div>
 
+{% block extra_scripts %}
 <script>
 (function () {
   var search = document.getElementById('product_search');
@@ -149,7 +157,6 @@
   search.addEventListener('input', function () {
     filterList(this.value);
     list.classList.remove('hidden');
-    // clear selection if user types again
     hidden.value = '';
     selectedBox.classList.add('hidden');
     search.classList.remove('hidden');
@@ -229,14 +236,13 @@
     list.classList.add('hidden');
     productError.classList.add('hidden');
 
-    // Stock hint + max guard
     stockHintQty.textContent = stock;
     stockHint.classList.remove('hidden');
     if (stock > 0) {
       qtyInput.setAttribute('max', stock);
-      stockHint.querySelector('span').className = 'font-semibold text-slate-700';
+      stockHintQty.className = 'font-semibold text-slate-700';
     } else {
-      stockHint.querySelector('span').className = 'font-semibold text-red-600';
+      stockHintQty.className = 'font-semibold text-red-600';
     }
     qtyInput.focus();
   }
@@ -253,4 +259,5 @@
   }
 })();
 </script>
+{% endblock %}
 {% endblock %}

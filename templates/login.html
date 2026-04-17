@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In - Inventory System</title>
+  <title data-i18n="login.title">Sign In - Inventory System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,10 +21,40 @@
       }
     }
   </script>
+  <style>
+    .lang-btn-active {
+      background-color: rgb(15 23 42);
+      color: #fff;
+    }
+    .lang-btn-inactive {
+      background-color: transparent;
+      color: rgb(100 116 139);
+    }
+    .lang-btn-inactive:hover {
+      color: rgb(15 23 42);
+    }
+  </style>
 </head>
 <body class="min-h-screen font-sans antialiased text-slate-950">
   <main class="flex min-h-screen items-center justify-center px-4 py-12">
     <div class="w-full max-w-sm">
+
+      <!-- Language switcher -->
+      <div class="mb-5 flex items-center justify-end gap-1">
+        <span class="text-[11px] font-medium text-slate-400 mr-1.5" data-i18n="login.lang.label">Language</span>
+        <button
+          data-lang-btn="en"
+          aria-pressed="true"
+          class="lang-btn-active rounded-lg px-2.5 py-1 text-xs font-bold transition-colors duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400">
+          EN
+        </button>
+        <button
+          data-lang-btn="ja"
+          aria-pressed="false"
+          class="lang-btn-inactive rounded-lg px-2.5 py-1 text-xs font-bold transition-colors duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400">
+          日本語
+        </button>
+      </div>
 
       <!-- Brand -->
       <div class="mb-7 flex items-center gap-3">
@@ -36,15 +66,15 @@
           </svg>
         </span>
         <div>
-          <p class="text-base font-bold tracking-tight text-slate-950">Inventory System</p>
-          <p class="text-[10px] uppercase tracking-widest text-slate-400">Management</p>
+          <p class="text-base font-bold tracking-tight text-slate-950" data-i18n="brand.name">Inventory System</p>
+          <p class="text-[10px] uppercase tracking-widest text-slate-400" data-i18n="brand.tagline">Management</p>
         </div>
       </div>
 
       <!-- Card -->
       <div class="surface-panel rounded-2xl p-6">
-        <h1 class="text-xl font-bold text-slate-950">Sign in</h1>
-        <p class="mt-1 text-sm text-slate-500">Enter your credentials to continue.</p>
+        <h1 class="text-xl font-bold text-slate-950" data-i18n="login.heading">Sign in</h1>
+        <p class="mt-1 text-sm text-slate-500" data-i18n="login.subheading">Enter your credentials to continue.</p>
 
         {% if general_error %}
           <div role="alert" class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
@@ -67,10 +97,11 @@
 
         <form method="POST" action="{{ url_for('auth.login') }}" novalidate class="mt-5 space-y-4">
           <div>
-            <label for="email" class="field-label">Email</label>
+            <label for="email" class="field-label" data-i18n="login.email">Email</label>
             <input
               type="email" name="email" id="email"
               placeholder="you@company.com"
+              data-i18n-placeholder="login.email.placeholder"
               value="{{ form_data.email if form_data else '' }}"
               class="field-input {% if field_errors and field_errors.get('email') %}is-invalid{% endif %}"
             >
@@ -80,10 +111,11 @@
           </div>
 
           <div>
-            <label for="password" class="field-label">Password</label>
+            <label for="password" class="field-label" data-i18n="login.password">Password</label>
             <input
               type="password" name="password" id="password"
               placeholder="Enter password"
+              data-i18n-placeholder="login.password.placeholder"
               class="field-input {% if field_errors and field_errors.get('password') %}is-invalid{% endif %}"
             >
             {% if field_errors and field_errors.get('password') %}
@@ -92,7 +124,7 @@
           </div>
 
           <button type="submit" class="btn-primary w-full mt-1">
-            Sign In
+            <span data-i18n="login.submit">Sign In</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
@@ -101,8 +133,9 @@
         </form>
       </div>
 
-      <p class="mt-5 text-center text-xs text-slate-400">For access issues, contact your administrator.</p>
+      <p class="mt-5 text-center text-xs text-slate-400" data-i18n="login.footer">For access issues, contact your administrator.</p>
     </div>
   </main>
+  <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 </body>
 </html>

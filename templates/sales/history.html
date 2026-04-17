@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}Sales History - Inventory System{% endblock %}
+{% block i18n_title_key %}sales_history.title{% endblock %}
 {% block page_eyebrow %}Sales{% endblock %}
+{% block page_eyebrow_key %}sales_history.eyebrow{% endblock %}
 {% block page_title %}Sales History{% endblock %}
+{% block page_title_key %}sales_history.page_title{% endblock %}
 
 {% block page_actions %}
 <a href="{{ url_for('sales.record') }}" class="btn-primary cursor-pointer">
   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-  Record Sale
+  <span data-i18n="sales_history.btn.record">Record Sale</span>
 </a>
 {% endblock %}
 
@@ -18,30 +21,33 @@
   <div class="border-b border-slate-200/60 px-5 py-5">
     <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
       <div>
-        <div class="section-kicker"><p class="eyebrow">Transaction Log</p></div>
+        <div class="section-kicker"><p class="eyebrow" data-i18n="sales_history.filter.eyebrow">Transaction Log</p></div>
         <h3 class="mt-1.5 text-lg font-bold text-slate-950">
           {% if sales %}{{ sales|length }} record{% if sales|length != 1 %}s{% endif %}{% else %}No results{% endif %}
         </h3>
       </div>
       <form method="GET" action="{{ url_for('sales.history') }}" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_160px_160px_auto]">
         <div class="sm:col-span-2 xl:col-span-1">
-          <label for="search" class="field-label">Product</label>
-          <input type="text" class="field-input" id="search" name="search" placeholder="Search product" value="{{ filters.search }}">
+          <label for="search" class="field-label" data-i18n="sales_history.filter.product.label">Product</label>
+          <input type="text" class="field-input" id="search" name="search"
+            placeholder="Search product"
+            data-i18n-placeholder="sales_history.filter.product.placeholder"
+            value="{{ filters.search }}">
         </div>
         <div>
-          <label for="date_from" class="field-label">From</label>
+          <label for="date_from" class="field-label" data-i18n="sales_history.filter.from.label">From</label>
           <input type="date" class="field-input" id="date_from" name="date_from" value="{{ filters.date_from }}">
         </div>
         <div>
-          <label for="date_to" class="field-label">To</label>
+          <label for="date_to" class="field-label" data-i18n="sales_history.filter.to.label">To</label>
           <input type="date" class="field-input" id="date_to" name="date_to" value="{{ filters.date_to }}">
         </div>
         <div class="flex items-center gap-2 sm:items-end sm:col-span-2 xl:col-span-1">
           <button type="submit" class="btn-primary flex-1 sm:flex-none cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            Filter
+            <span data-i18n="sales_history.filter.btn.filter">Filter</span>
           </button>
-          <a href="{{ url_for('sales.history') }}" class="btn-secondary flex-1 sm:flex-none text-center cursor-pointer">Reset</a>
+          <a href="{{ url_for('sales.history') }}" class="btn-secondary flex-1 sm:flex-none text-center cursor-pointer" data-i18n="sales_history.filter.btn.reset">Reset</a>
         </div>
       </form>
     </div>
@@ -52,10 +58,10 @@
     <table class="data-table w-full text-sm">
       <thead>
         <tr class="bg-slate-50/70 border-b border-slate-200/60">
-          <th class="px-5 py-3 text-left">Sale ID</th>
-          <th class="px-5 py-3 text-left">Product</th>
-          <th class="px-5 py-3 text-left">Qty Sold</th>
-          <th class="px-5 py-3 text-left">Date</th>
+          <th class="px-5 py-3 text-left" data-i18n="sales_history.th.id">Sale ID</th>
+          <th class="px-5 py-3 text-left" data-i18n="sales_history.th.product">Product</th>
+          <th class="px-5 py-3 text-left" data-i18n="sales_history.th.qty">Qty Sold</th>
+          <th class="px-5 py-3 text-left" data-i18n="sales_history.th.date">Date</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-200/60">
@@ -75,8 +81,8 @@
   {% else %}
   <div class="empty-state">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-    <p class="mt-3 text-sm font-semibold text-slate-800">No sales found.</p>
-    <p class="mt-1 text-sm text-slate-500">Try a different product name or date range.</p>
+    <p class="mt-3 text-sm font-semibold text-slate-800" data-i18n="sales_history.empty.heading">No sales found.</p>
+    <p class="mt-1 text-sm text-slate-500" data-i18n="sales_history.empty.sub">Try a different product name or date range.</p>
   </div>
   {% endif %}
 </div>
