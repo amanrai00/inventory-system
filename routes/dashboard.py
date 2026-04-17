@@ -65,7 +65,7 @@ def dashboard():
     # AI demand predictions
     cur.execute(
         "SELECT p.id, p.name, p.sku, p.stock_quantity, p.minimum_stock_level, "
-        "pr.recommended_restock_qty, pr.reasoning, pr.predicted_at "
+        "pr.recommended_restock_qty, pr.reasoning, pr.reason_en, pr.reason_ja, pr.predicted_at "
         "FROM predictions pr "
         "JOIN products p ON p.id = pr.product_id "
         "WHERE pr.id IN (SELECT MAX(id) FROM predictions GROUP BY product_id) "
@@ -82,7 +82,9 @@ def dashboard():
             'minimum_stock_level': row[4],
             'recommended_restock_qty': row[5],
             'reasoning': row[6],
-            'predicted_at': row[7],
+            'reason_en': row[7] or row[6],
+            'reason_ja': row[8] or row[6],
+            'predicted_at': row[9],
         })
 
     cur.close()

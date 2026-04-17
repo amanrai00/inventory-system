@@ -52,9 +52,10 @@ def call_bedrock(product_name, sku, stock_qty, min_stock, sold_last_30):
         "Respond in this exact JSON format with no extra text:\n"
         "{\n"
         '  "recommended_restock_qty": <integer>,\n'
-        '  "reasoning": "<one sentence explanation in English>",\n'
-        '  "reasoning_en": "<one sentence explanation in English>",\n'
-        '  "reasoning_ja": "<one sentence explanation in natural, professional business Japanese>"\n'
+        '  "reasoning": {\n'
+        '    "en": "<one sentence explanation in English>",\n'
+        '    "ja": "<one sentence explanation in natural, professional business Japanese>"\n'
+        "  }\n"
         "}"
     )
     body = {
@@ -90,10 +91,18 @@ def run():
         print(f"  Processing: {name} (stock: {stock_qty}, sold last 30d: {sold_last_30})")
         try:
             prediction = call_bedrock(name, sku, stock_qty, min_stock, sold_last_30)
-            reasoning = prediction.get("reasoning", prediction.get("reasoning_en", ""))
-            reasoning_en = prediction.get("reasoning_en", reasoning)
-            reasoning_ja = prediction.get("reasoning_ja", "")
-            save_prediction(cursor, conn, product_id, prediction["recommended_restock_qty"], reasoning, reasoning_en, reasoning_ja)
+            reasoning = prediction.get("reasoning", {})
+            reasoning_en = reasoning.get("en", "")
+            reasoning_ja = reasoning.get("ja", "")
+            save_prediction(
+                cursor,
+                conn,
+                product_id,
+                prediction["recommended_restock_qty"],
+                reasoning_en,
+                reasoning_en,
+                reasoning_ja
+            )
             print(f"    -> Restock {prediction['recommended_restock_qty']} units: {reasoning_en}")
         except Exception as e:
             print(f"    -> ERROR for {name}: {e}")
