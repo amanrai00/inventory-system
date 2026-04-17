@@ -4,11 +4,9 @@
    Font: Plus Jakarta Sans
    ===================================================== */
 
-/* Hide content until i18n translations are applied, then show instantly */
-body:not(.page-ready) #main-content,
-body:not(.page-ready) .app-topbar { visibility: hidden; }
-body.page-ready #main-content,
-body.page-ready .app-topbar { visibility: visible; }
+/* Hide entire body until i18n translations are applied, then reveal instantly */
+body:not(.page-ready) { visibility: hidden; }
+body.page-ready { visibility: visible; }
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 

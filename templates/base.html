@@ -11,6 +11,15 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script>
+    // Runs synchronously before first paint — prevents i18n flicker
+    (function () {
+      try {
+        var lang = localStorage.getItem('inv_lang') || 'en';
+        document.documentElement.lang = lang;
+      } catch (e) {}
+    })();
+  </script>
+  <script>
     tailwind.config = {
       theme: {
         extend: {
