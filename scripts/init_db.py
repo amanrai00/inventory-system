@@ -33,6 +33,34 @@ def split_sql_statements(sql_text: str) -> list[str]:
     return statements
 
 
+def ensure_prediction_columns(cursor, db_backend: str) -> None:
+    if db_backend == "mysql":
+        cursor.execute("SHOW TABLES LIKE 'predictions'")
+        if not cursor.fetchone():
+            return
+
+        cursor.execute("SHOW COLUMNS FROM predictions")
+        existing_columns = {row[0] for row in cursor.fetchall()}
+        if "reason_en" not in existing_columns:
+            cursor.execute("ALTER TABLE predictions ADD COLUMN reason_en TEXT NULL")
+        if "reason_ja" not in existing_columns:
+            cursor.execute("ALTER TABLE predictions ADD COLUMN reason_ja TEXT NULL")
+        return
+
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='predictions'"
+    )
+    if not cursor.fetchone():
+        return
+
+    cursor.execute("PRAGMA table_info(predictions)")
+    existing_columns = {row[1] for row in cursor.fetchall()}
+    if "reason_en" not in existing_columns:
+        cursor.execute("ALTER TABLE predictions ADD COLUMN reason_en TEXT")
+    if "reason_ja" not in existing_columns:
+        cursor.execute("ALTER TABLE predictions ADD COLUMN reason_ja TEXT")
+
+
 def main() -> None:
     load_dotenv()
 
@@ -58,6 +86,8 @@ def main() -> None:
 
     for statement in split_sql_statements(schema_sql):
         cursor.execute(statement)
+
+    ensure_prediction_columns(cursor, Config.DB_BACKEND)
 
     connection.commit()
     cursor.close()

@@ -45,6 +45,8 @@ CREATE TABLE IF NOT EXISTS `predictions` (
   `product_id` int NOT NULL,
   `recommended_restock_qty` int DEFAULT NULL,
   `reasoning` text,
+  `reason_en` text,
+  `reason_ja` text,
   `predicted_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),

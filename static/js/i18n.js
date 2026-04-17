@@ -220,8 +220,8 @@
       'action.view': 'View',
 
       // Product validation errors
-      'validation.product.name_required': 'Product name is required.',
-      'validation.product.sku_required': 'SKU is required.',
+      'validation.product.name_required': '商品名を入力してください。',
+      'validation.product.sku_required': 'SKUを入力してください。',
       'validation.product.price_positive': 'Price must be greater than 0.',
       'validation.product.price_invalid': 'Price must be a valid number.',
       'validation.product.stock_negative': 'Stock quantity cannot be negative.',
