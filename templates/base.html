@@ -189,7 +189,13 @@
                 {% for category, message in messages %}
                   {% if category == 'success' %}
                     <div role="alert" class="flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
-                      <span>{{ message }}</span>
+                      <span>
+                        {% if message == 'Login successful!' %}
+                          <span data-i18n="login.message.success">Login successful!</span>
+                        {% else %}
+                          {{ message }}
+                        {% endif %}
+                      </span>
                       <button onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer" aria-label="Dismiss">&times;</button>
                     </div>
                   {% elif category == 'danger' or category == 'error' %}
