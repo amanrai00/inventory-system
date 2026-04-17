@@ -244,7 +244,7 @@
       'login.email': 'メールアドレス',
       'login.email.placeholder': 'you@example.com',
       'login.password': 'パスワード',
-      'login.password.placeholder': 'パスワードを入力してください',
+      'login.password.placeholder': '••••••••',
       'login.submit': 'ログイン',
       'login.footer': 'ログインできない場合は管理者にご連絡ください。',
       'login.lang.label': '言語',
