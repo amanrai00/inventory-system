@@ -99,7 +99,7 @@ def run():
                 conn,
                 product_id,
                 prediction["recommended_restock_qty"],
-                reasoning_en,
+                json.dumps(reasoning),
                 reasoning_en,
                 reasoning_ja
             )
