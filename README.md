@@ -1,3 +1,64 @@
+# Inventory Management System
+ 
+> 🇯🇵 日本語版はこちら → [README\_JA.md](README_JA.md)
+ 
+A production-grade internal inventory management dashboard built with **Flask**, **Jinja2**, and **AdminLTE 3**, deployed on **AWS** (EC2 + RDS MySQL). Features AI-powered demand forecasting via **Amazon Bedrock**, bilingual EN/JA UI, automated low-stock email alerts via **Amazon SES**, EC2 CPU monitoring via **CloudWatch**, and a complete **CI/CD pipeline** through GitHub Actions.
+ 
+> **Live:** [http://35.77.96.153](http://35.77.96.153/login) — AWS EC2 · ap-northeast-1 (Tokyo) · HTTP only (HTTPS pending — requires custom domain)
+ 
+---
+ 
+## Tech Stack
+ 
+| Layer | Technology |
+| --- | --- |
+| Backend | Python 3, Flask (Application Factory + Blueprints) |
+| Frontend | Jinja2, AdminLTE 3, Bootstrap 4, Font Awesome |
+| Database | MySQL 8.4 on AWS RDS (production) / SQLite (local dev) |
+| Server | Ubuntu 24 EC2 · Nginx reverse proxy · Gunicorn · systemd |
+| AI / ML | Amazon Bedrock — Claude Haiku 4.5 (jp inference profile) |
+| Alerts | Amazon SES (low stock email) · CloudWatch + SNS (CPU alarm) |
+| CI/CD | GitHub Actions — auto-deploy on push to `main` |
+| Auth | IAM Role (`inventory-ec2-ses-role`) — no hardcoded AWS credentials |
+| i18n | Bilingual EN/JA — Flask session-based language switching |
+ 
+---
+ 
+## Features
+ 
+### Core Application
+ 
+- Secure employee login / logout with session management
+- Dashboard: total products, low-stock count, out-of-stock count, total sales
+- **Product management** — add, edit, search by name or SKU, filter by stock status
+- **Sales management** — record sales with automatic stock deduction and oversell protection
+- Sales history with search and date-range filtering
+- Server-side input validation throughout
+- Stock status computed dynamically — always reflects real-time inventory state
+- **Bilingual UI (EN/JA)** — full English/Japanese language toggle persisted via Flask session; all UI strings, flash messages, and stock status labels rendered in the active language
+### AWS Integrations
+ 
+- **Amazon SES** — automatically sends a low-stock email alert when a sale brings `stock_quantity` below `minimum_stock_level`
+- **CloudWatch Alarm** — monitors EC2 CPU utilization; triggers SNS email when usage exceeds 80% for 1 consecutive minute
+- **Amazon Bedrock (Claude Haiku 4.5)** — daily cron job at 2 AM (EC2 time) fetches all low-stock products, retrieves 30-day sales history per product, and calls Bedrock to generate `recommended_restock_qty` and reasoning in both English and Japanese; predictions are saved to the `predictions` table and displayed on the dashboard in the active language
+---
+ 
+## Screenshots
+ 
+### Dashboard
+ 
+![Dashboard](screenshots/dashboard.png)
+ 
+### Product Inventory
+ 
+![Products](screenshots/products.png)
+ 
+### AI Restock Recommendations (Powered by Amazon Bedrock)
+ 
+![AI Predictions](screenshots/ai-predictions.png)
+ 
+---
+ 
 ## Architecture
  
 ```
@@ -234,4 +295,3 @@ aws cloudwatch set-alarm-state \
 ## License
  
 This project is built for portfolio and learning purposes.
- 
