@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from models.sale import record_sale, get_sales_history_filtered
 from models.product import get_all_products, get_product_by_id
-from routes.auth import login_required
+from routes.auth import login_required, admin_required
 from utils.email_alerts import send_low_stock_alert
 
 sales_bp = Blueprint('sales', __name__)
@@ -22,6 +22,7 @@ def history():
 
 @sales_bp.route('/sales/record', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def record():
     mysql = current_app.extensions['mysql']
     products = get_all_products(mysql)

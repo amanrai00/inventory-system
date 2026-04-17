@@ -8,7 +8,7 @@ from models.product import (
     update_stock,
     get_stock_status,
 )
-from routes.auth import login_required
+from routes.auth import login_required, admin_required
 
 products_bp = Blueprint('products', __name__)
 
@@ -134,6 +134,7 @@ def list_products():
 
 @products_bp.route('/products/add', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_product_route():
     mysql = current_app.extensions['mysql']
     if request.method == 'POST':
@@ -159,6 +160,7 @@ def add_product_route():
 
 @products_bp.route('/products/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_product(id):
     mysql = current_app.extensions['mysql']
     product = get_product_by_id(mysql, id)
@@ -190,6 +192,7 @@ def edit_product(id):
 
 @products_bp.route('/products/update-stock/<int:id>', methods=['POST'])
 @login_required
+@admin_required
 def update_stock_route(id):
     mysql = current_app.extensions['mysql']
     try:

@@ -88,3 +88,14 @@ def logout():
     session.clear()
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
+
+
+def admin_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get('role') != 'admin':
+            flash('管理者のみアクセス可能です。 / Admin access only.', 'danger')
+            return redirect(url_for('products.list_products'))
+        return f(*args, **kwargs)
+    return decorated_function
