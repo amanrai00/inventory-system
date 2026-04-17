@@ -26,6 +26,17 @@ CREATE TABLE IF NOT EXISTS sales (
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
+CREATE TABLE IF NOT EXISTS predictions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER NOT NULL,
+  recommended_restock_qty INTEGER DEFAULT NULL,
+  reasoning TEXT,
+  reason_en TEXT,
+  reason_ja TEXT,
+  predicted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
 INSERT INTO users (name, email, password_hash, role)
 SELECT
   'Admin',

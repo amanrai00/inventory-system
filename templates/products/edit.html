@@ -22,14 +22,14 @@
         <div>
           <label for="name" class="field-label" data-i18n="edit_product.field.name">Product Name</label>
           <input type="text" class="form-field field-input" id="name" name="name" value="{{ form_data.name }}"
-            required data-required-message="Product name is required">
+            required data-required-message="商品名を入力してください。">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
         </div>
 
         <div>
           <label for="sku" class="field-label" data-i18n="edit_product.field.sku">SKU</label>
           <input type="text" class="form-field field-input" id="sku" name="sku" value="{{ form_data.sku }}"
-            required data-required-message="SKU is required">
+            required data-required-message="SKUを入力してください。">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
         </div>
 
@@ -37,7 +37,7 @@
           <div>
             <label for="price" class="field-label" data-i18n="edit_product.field.price">Price ($)</label>
             <input type="number" step="0.01" min="0.01" class="form-field field-input" id="price" name="price" value="{{ form_data.price }}"
-              required data-required-message="Price is required" data-range-message="Price must be greater than 0">
+              required data-required-message="価格を入力してください。" data-range-message="Price must be greater than 0">
             <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
           </div>
 
@@ -52,7 +52,7 @@
         <div>
           <label for="minimum_stock_level" class="field-label" data-i18n="edit_product.field.min_stock">Minimum Stock Level</label>
           <input type="number" min="0" class="form-field field-input" id="minimum_stock_level" name="minimum_stock_level" value="{{ form_data.minimum_stock_level }}"
-            required data-required-message="Minimum stock level is required" data-range-message="Minimum stock must be 0 or more">
+            required data-required-message="最低在庫数を入力してください。" data-range-message="Minimum stock must be 0 or more">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
           <p class="mt-1.5 text-xs text-slate-500" data-i18n="edit_product.field.min_stock.hint">Stock alerts trigger when on-hand quantity falls below this.</p>
         </div>

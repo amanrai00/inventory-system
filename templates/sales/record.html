@@ -97,7 +97,7 @@
             value="{{ request.form.get('quantity_sold', '') }}"
             placeholder="1"
             data-i18n-placeholder="record_sale.field.qty.placeholder"
-            required data-required-message="Quantity is required" data-range-message="Quantity must be at least 1">
+            required data-required-message="数量を入力してください。" data-range-message="Quantity must be at least 1">
           <div class="invalid-feedback hidden mt-1.5 text-xs font-semibold text-red-600"></div>
           <!-- Live stock hint -->
           <p id="stock-hint" class="hidden mt-1.5 text-xs text-slate-500">
@@ -120,7 +120,7 @@
     <div class="space-y-3 text-sm text-slate-600">
       <p><span class="font-semibold text-slate-800" data-i18n="record_sale.field.product">Product</span> <span data-i18n="record_sale.tips.product">— Search by name or SKU. Stock level is shown in the dropdown.</span></p>
       <p><span class="font-semibold text-slate-800" data-i18n="record_sale.field.qty">Quantity</span> <span data-i18n="record_sale.tips.qty">— Can't exceed available stock. Whole numbers only.</span></p>
-      <p><span class="font-semibold text-slate-800">Duplicates</span> <span data-i18n="record_sale.tips.duplicates">— Submit once and wait for confirmation.</span></p>
+      <p><span class="font-semibold text-slate-800">重複送信</span> <span data-i18n="record_sale.tips.duplicates">— Submit once and wait for confirmation.</span></p>
     </div>
   </aside>
 </div>
