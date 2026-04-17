@@ -140,7 +140,10 @@
               </span>
               <div class="min-w-0">
                 <p class="text-sm font-semibold text-white truncate">{{ session.get('user_name', 'Guest') }}</p>
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">{{ session.get('user_role', 'Staff') }}</p>
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-widest truncate"
+                  data-role-label="{{ session.get('user_role', 'Staff') }}"
+                >{{ session.get('user_role', 'Staff') }}</p>
               </div>
             </div>
             <a href="{{ url_for('auth.logout') }}"

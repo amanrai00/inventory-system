@@ -85,6 +85,7 @@
       'dashboard.ai.empty_heading': 'No predictions yet.',
       'dashboard.ai.empty_sub': 'Run python3 scripts/predict.py to generate them.',
       'dashboard.alert.out_of_stock.btn': 'Review',
+      'dashboard.alert.out_of_stock.sub': 'These need restocking before they can be sold.',
       'dashboard.alert.low_stock.btn': 'View',
       'dashboard.alert.healthy.heading': 'Stock levels are healthy',
       'dashboard.alert.healthy.sub': 'All products are above their minimum thresholds.',
@@ -274,7 +275,7 @@
       'dashboard.stock.eyebrow': '在庫',
       'dashboard.stock.heading': '在庫内訳',
       'dashboard.quick_actions.eyebrow': 'クイックアクション',
-      'dashboard.quick_actions.view_inventory': '在庫一覧',
+      'dashboard.quick_actions.view_inventory': '商品一覧',
       'dashboard.critical.eyebrow': '要対応',
       'dashboard.critical.heading': '在庫少・在庫切れ',
       'dashboard.critical.btn_all': '全商品',
@@ -290,11 +291,12 @@
       'dashboard.recent.btn_all': '全売上',
       'dashboard.recent.empty_heading': '売上がありません。',
       'dashboard.recent.empty_sub': '最初の売上を登録するとここに表示されます。',
-      'dashboard.ai.eyebrow': 'Amazon Bedrock 提供',
+      'dashboard.ai.eyebrow': 'Amazon Bedrock による予測',
       'dashboard.ai.heading': 'AI 補充推奨',
       'dashboard.ai.empty_heading': '予測データがありません。',
       'dashboard.ai.empty_sub': 'python3 scripts/predict.py を実行して生成してください。',
       'dashboard.alert.out_of_stock.btn': '確認',
+      'dashboard.alert.out_of_stock.sub': '販売前に在庫を補充してください。',
       'dashboard.alert.low_stock.btn': '表示',
       'dashboard.alert.healthy.heading': '在庫は良好です',
       'dashboard.alert.healthy.sub': 'すべての商品が最低在庫を上回っています。',
@@ -310,7 +312,7 @@
       'products.filter.search.placeholder': '名前またはSKU',
       'products.filter.status.label': 'ステータス',
       'products.filter.status.all': '全ステータス',
-      'products.filter.status.normal': '正常',
+      'products.filter.status.normal': '通常',
       'products.filter.status.low_stock': '在庫少',
       'products.filter.status.out_of_stock': '在庫切れ',
       'products.filter.btn.filter': '絞り込み',
@@ -322,7 +324,7 @@
       'products.th.stock': '在庫',
       'products.th.min': '最低',
       'products.th.status': 'ステータス',
-      'products.status.normal': '正常',
+      'products.status.normal': '通常',
       'products.status.low_stock': '在庫少',
       'products.status.out_of_stock': '在庫切れ',
       'products.btn.edit': '編集',
@@ -418,7 +420,7 @@
       // Common status pills
       'status.out_of_stock': '在庫切れ',
       'status.low_stock': '在庫少',
-      'status.normal': '正常',
+      'status.normal': '通常',
       'status.restock': '補充',
       'status.units': '個',
 
@@ -431,6 +433,11 @@
 
   var DEFAULT_LANG = 'en';
   var STORAGE_KEY = 'inv_lang';
+  var ROLE_TRANSLATIONS = {
+    ja: {
+      admin: '\u7ba1\u7406\u8005'
+    }
+  };
 
   function getLang() {
     try {
@@ -450,6 +457,34 @@
     var lang = getLang();
     var dict = TRANSLATIONS[lang] || TRANSLATIONS[DEFAULT_LANG];
     return dict[key] !== undefined ? dict[key] : (TRANSLATIONS[DEFAULT_LANG][key] || key);
+  }
+
+  function translateRoleLabel(role) {
+    var lang = getLang();
+    var normalizedRole = (role || '').trim().toLowerCase();
+    var translatedRole = ROLE_TRANSLATIONS[lang] && ROLE_TRANSLATIONS[lang][normalizedRole];
+    return translatedRole || role;
+  }
+
+  function translateDashboardStatusLabel(label) {
+    var lang = getLang();
+    if (lang !== 'ja') return label;
+
+    if (label === 'Normal') return '通常';
+    if (label === 'Low Stock') return '在庫少';
+    if (label === 'Out of Stock') return '在庫切れ';
+    return label;
+  }
+
+  function formatDashboardOutOfStockCount(count) {
+    var lang = getLang();
+    var numericCount = parseInt(count, 10);
+
+    if (lang === 'ja') {
+      return '在庫切れの商品が' + numericCount + '件あります。';
+    }
+
+    return numericCount + ' item' + (numericCount !== 1 ? 's' : '') + ' out of stock';
   }
 
   function applyTranslations() {
@@ -485,6 +520,19 @@
     // innerHTML (for mixed content)
     document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
       el.innerHTML = t(el.getAttribute('data-i18n-html'));
+    });
+
+    // Dynamic role labels coming from the server session
+    document.querySelectorAll('[data-role-label]').forEach(function (el) {
+      el.textContent = translateRoleLabel(el.getAttribute('data-role-label'));
+    });
+
+    document.querySelectorAll('[data-dashboard-status-label]').forEach(function (el) {
+      el.textContent = translateDashboardStatusLabel(el.getAttribute('data-dashboard-status-label'));
+    });
+
+    document.querySelectorAll('[data-dashboard-out-of-stock-count]').forEach(function (el) {
+      el.textContent = formatDashboardOutOfStockCount(el.getAttribute('data-dashboard-out-of-stock-count'));
     });
 
     // Update language switcher buttons active state
