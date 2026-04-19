@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, session
 from models.sale import record_sale, get_sales_history_filtered
 from models.product import get_all_products, get_product_by_id
 from routes.auth import login_required, admin_required
@@ -49,7 +49,8 @@ def record():
 
         success, message = record_sale(mysql, product_id, quantity_sold)
         if success:
-            flash(message, 'success')
+            lang = session.get('lang', 'en')
+            flash('売上を登録しました。' if lang == 'ja' else message, 'success')
             product = get_product_by_id(mysql, product_id)
             if product and product[4] <= product[5]:
                 send_low_stock_alert(
