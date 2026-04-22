@@ -51,15 +51,15 @@
 
 ### ダッシュボード
 
-![ダッシュボード](screenshots/dashboard.png)
+![ダッシュボード](screenshots/dashboard_ja.png)
 
 ### 商品在庫一覧
 
-![商品一覧](screenshots/products.png)
+![商品一覧](screenshots/products_ja.png)
 
 ### AI発注推奨（Amazon Bedrock）
 
-![AI予測](screenshots/ai-predictions.png)
+![AI予測](screenshots/ai-predictions_ja.png)
 
 ---
 
