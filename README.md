@@ -65,37 +65,9 @@ Flask inventory dashboard deployed on **AWS EC2 + RDS**, with **Amazon Bedrock A
 
 ## Architecture
 
-```
-+----------------------------------------------------------------+
-|                      Developer                                 |
-|              Edit code and git push -> main                    |
-+------------------------------+---------------------------------+
-                               |
-                               v
-+----------------------------------------------------------------+
-|                GitHub Actions  (CI/CD Pipeline)                |
-|    SSH -> pull latest code -> install dependencies -> restart  |
-+------------------------------+---------------------------------+
-                               |
-                               v
-+----------------------------------------------------------------+
-|         EC2 Production Server  aman-inventory-prod (Tokyo)     |
-|                                                                |
-|   Browser -> Nginx (port 80) -> Gunicorn -> Flask (port 5000)  |
-|                                                                |
-|           IAM Role Auth (no hardcoded AWS credentials)         |
-+------------+---------------------------------------------------+
-             |                         |
-             v                         v
-+--------------------+   +------------------------------------+
-|   RDS MySQL 8.4    |   |        AWS Integrated Services     |
-|   Inventory DB     |   |                                    |
-|   (Tokyo Region)   |   |  SES      -> low stock email alert |
-+--------------------+   |  Bedrock  -> AI restock prediction |
-                         |             (daily cron 2AM)       |
-                         |  CloudWatch-> CPU monitor SNS alert|
-                         +------------------------------------+
-```
+## Architecture
+
+![Production Architecture](screenshots/Architecture.png)
 
 ---
 
