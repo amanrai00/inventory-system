@@ -65,9 +65,9 @@ Flask inventory dashboard deployed on **AWS EC2 + RDS**, with **Amazon Bedrock A
 
 ## Architecture
 
-## Architecture
+The system is deployed on AWS EC2 in the Tokyo region with RDS MySQL, GitHub Actions CI/CD, IAM role authentication, SES alerts, CloudWatch monitoring, and Amazon Bedrock AI restock prediction.
 
-![Production Architecture](screenshots/Architecture.png)
+![Production Architecture](screenshots/Architecture.PNG)
 
 ---
 
