@@ -1,165 +1,195 @@
+<div align="center">
+
 # Inventory Management System
 
-> [JP] 日本語版はこちら -> [README\_JA.md](README_JA.md)
+### Full-stack inventory dashboard with AWS Bedrock AI restock predictions
 
-Flask inventory dashboard deployed on **AWS EC2 + RDS**, with **Amazon Bedrock AI restock predictions**, **SES low-stock alerts**, **CloudWatch CPU monitoring**, **IAM role authentication** (no hardcoded credentials), **bilingual EN/JA UI**, and a full **CI/CD pipeline via GitHub Actions**.
 
-> **Live demo:** [http://35.77.96.153](http://35.77.96.153/login) | AWS EC2 | ap-northeast-1 (Tokyo) | HTTP only (HTTPS pending)
-> Demo login: `demo@company.com` / `demo123` (read-only employee account)
+[![Live Demo](https://img.shields.io/badge/🟢_Live_Demo-Open-2ea44f?style=for-the-badge)](http://35.77.96.153/login)
+[![日本語](https://img.shields.io/badge/日本語-README__JA.md-red?style=for-the-badge)](README_JA.md)
+
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white)
+![EC2](https://img.shields.io/badge/EC2-FF9900?style=flat&logo=amazon-ec2&logoColor=white)
+![RDS](https://img.shields.io/badge/RDS-527FFF?style=flat&logo=amazon-rds&logoColor=white)
+![Bedrock](https://img.shields.io/badge/Bedrock-%23232F3E.svg?style=flat&logo=amazon-aws&logoColor=white)
+![Python](https://img.shields.io/badge/Python_3.12-3776AB?style=flat&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL_8.4-4479A1?style=flat&logo=mysql&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/CI%2FCD-2088FF?style=flat&logo=github-actions&logoColor=white)
+
+---
+
+**Flask app deployed on AWS EC2 + RDS in Tokyo. Amazon Bedrock generates daily restock recommendations in English and Japanese. SES sends low-stock alerts. CloudWatch monitors CPU. GitHub Actions deploys on every push to `main`.**
+
+</div>
+
+---
+
+## 🎯 Try It
+
+| | |
+|---|---|
+| **Live demo** | [http://35.77.96.153/login](http://35.77.96.153/login) |
+| **Region** | AWS ap-northeast-1 (Tokyo) |
+| **Demo login** | `demo@company.com` / `demo123` (read-only) |
+
+> Demo runs on HTTP. HTTPS via custom domain + Let's Encrypt is on the roadmap.
+
+---
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><b>Dashboard</b></td>
+    <td align="center"><b>AI Restock Recommendations</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/dashboard.png" /></td>
+    <td><img src="screenshots/ai-predictions.png" /></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Product Inventory</b></td>
+    <td align="center"><b>Production Architecture</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/products.png" /></td>
+    <td><img src="screenshots/Architecture.PNG" /></td>
+  </tr>
+</table>
+
+---
+
+## What This Does
+
+A small business has 100+ products and needs to know:
+
+1. **What's running low right now:** dashboard shows current stock counts with color-coded status
+2. **What to reorder, and how much:** Amazon Bedrock (Claude Haiku 4.5) reads 30-day sales history per product and suggests restock quantities daily, with reasoning in the user's language
+3. **When something breaks:** SES emails the manager when stock drops below threshold; CloudWatch fires an SNS email when EC2 CPU spikes
+
+Everything runs on AWS, deploys automatically on `git push`, and uses IAM role authentication, so no AWS keys live in code or environment.
+
+---
+
+## Architecture
+
+```
+                    GitHub Actions (push to main)
+                              │
+                              ▼ SSH deploy
+   ┌──────────────────────────────────────────────┐
+   │                EC2 (Ubuntu 24)               │
+   │   Nginx :80  →  Gunicorn :5000  →  Flask     │
+   │                       │                      │
+   │              IAM Role (no keys)              │
+   └────┬───────────┬────────────┬────────────┬───┘
+        │           │            │            │
+        ▼           ▼            ▼            ▼
+      RDS         Bedrock       SES       CloudWatch
+     MySQL    Claude Haiku   Email       CPU alarm
+  (internal)  (daily cron)  alerts      → SNS
+```
+
+| Decision | Why |
+|---|---|
+| **EC2 + Nginx + Gunicorn** over App Runner | Full control over the stack; learning AWS fundamentals end-to-end |
+| **RDS not publicly accessible** | MySQL port 3306 reachable only from the EC2 security group, never from the internet |
+| **IAM role on EC2** over access keys | No credentials to leak, rotate, or commit |
+| **Bedrock inference profile** (`jp.anthropic...`) | Standard model IDs fail for cross-region inference in `ap-northeast-1` |
+| **Server-side language toggle** over localStorage | Bedrock predictions are rendered server-side, so the language must persist in Flask session |
+| **SQLite locally, MySQL in production** | Zero-setup local dev with a real DB engine in production |
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-| --- | --- |
-| Backend | Python 3, Flask (Application Factory + Blueprints) |
-| Frontend | Jinja2, AdminLTE 3, Bootstrap 4, Font Awesome |
-| Database | MySQL 8.4 on AWS RDS (production) / SQLite (local dev) |
-| Server | Ubuntu 24 EC2 | Nginx reverse proxy | Gunicorn | systemd |
-| AI / ML | Amazon Bedrock: Claude Haiku 4.5 (jp inference profile) |
-| Alerts | Amazon SES (low stock email) | CloudWatch + SNS (CPU alarm) |
+|---|---|
+| Backend | Python 3.12, Flask (Application Factory + Blueprints) |
+| Frontend | Jinja2, AdminLTE 3, Bootstrap 4 |
+| Database | MySQL 8.4 on RDS (prod), SQLite (local) |
+| Server | Ubuntu 24 EC2, Nginx, Gunicorn (3 workers), systemd |
+| AI / ML | Amazon Bedrock: Claude Haiku 4.5 (JP inference profile) |
+| Alerts | Amazon SES (low stock), CloudWatch + SNS (CPU) |
 | CI/CD | GitHub Actions: auto-deploy on push to `main` |
-| Auth | IAM Role (`inventory-ec2-ses-role`): no hardcoded AWS credentials |
-| i18n | Bilingual EN/JA: Flask session-based language switching |
+| Auth | EC2 IAM Role: no hardcoded AWS credentials |
+| i18n | Flask session-based EN/JA toggle |
 
 ---
 
 ## Features
 
-### Core Application
-
-- Secure login / logout with session management
-- Dashboard: total products, low-stock count, out-of-stock count, total sales
-- **Product management**: add, edit, search by name or SKU, filter by stock status
-- **Sales management**: record sales with automatic stock deduction and oversell protection
-- Sales history with search and date-range filtering
-- Server-side input validation throughout
-- Stock status computed dynamically, always reflecting real-time inventory state
-- **Bilingual UI (EN/JA)**: full English/Japanese language toggle persisted via Flask session; all UI strings, flash messages, and stock status labels rendered in the active language
-- **Role-based access control**: `admin_required` decorator restricts add/edit/record routes to admin role; employee accounts are read-only with admin UI buttons hidden
-
-### AWS Integrations
-
-- **Amazon SES**: automatically sends a low-stock email alert when a sale brings `stock_quantity` below `minimum_stock_level`
-- **CloudWatch Alarm**: monitors EC2 CPU utilization; triggers SNS email when usage exceeds 80% for 1 consecutive minute
-- **Amazon Bedrock (Claude Haiku 4.5)**: daily cron job at 2 AM (EC2 time) fetches all low-stock products, retrieves 30-day sales history per product, and calls Bedrock to generate `recommended_restock_qty` and reasoning in both English and Japanese; predictions saved to the `predictions` table and displayed on the dashboard in the active language
+- **Inventory CRUD:** add, edit, search by name/SKU, filter by stock status
+- **Sales recording:** atomic stock deduction with oversell protection
+- **AI restock predictions:** daily Bedrock cron job writes recommendations in EN and JA to the `predictions` table
+- **Low-stock alerts:** SES email fires when a sale drops a product below threshold
+- **CPU alarm:** CloudWatch and SNS email when EC2 CPU exceeds 80% for 1 minute
+- **Bilingual UI:** full EN/JA toggle (UI strings, flash messages, Bedrock reasoning) persisted in Flask session
+- **Role-based access:** admin role can write; employee/demo role is read-only, with admin UI hidden at template and route level
+- **CI/CD:** push to `main` triggers GitHub Actions to SSH into EC2, pull, install, and restart the systemd unit
 
 ---
 
-## Screenshots
+## Problems Solved During Build
 
-### Dashboard
+These are the actual blockers I hit and how I worked through them. Each one was a real debugging session.
 
-![Dashboard](screenshots/dashboard.png)
+**Bedrock inference profile in Tokyo region.** Calling Bedrock with the standard model ID `anthropic.claude-haiku-4-5-20251001-v1:0` returned a cross-region inference error in `ap-northeast-1`. The fix was the Japan inference profile ID: `jp.anthropic.claude-haiku-4-5-20251001-v1:0`. Found in the Bedrock inference profile docs. Model IDs and inference profile IDs look nearly identical but behave differently in cross-region setups.
 
-### Product Inventory
+**Bilingual AI predictions returning English only.** UI toggled to Japanese but Bedrock kept replying in English. Root cause: language was stored only in `localStorage`, so the Flask dashboard route had no way to know which language to render. Fix: added a `/set-lang/<lang>` route to persist language in server-side session, and stored both `reason_en` and `reason_ja` in the `predictions` table so the dashboard can render the active language.
 
-![Products](screenshots/products.png)
+**GitHub Actions runner IPs are dynamic.** Tried IP-allowlisting port 22 to GitHub's runner range; it changes too often to maintain. Current setup: port 22 open to `0.0.0.0/0` at the security group, hardened at the OS level (password auth disabled, key-pair only via `sshd_config`). Not ideal. A self-hosted runner in a private subnet would be cleaner and is on the roadmap.
 
-### AI Restock Recommendations (Powered by Amazon Bedrock)
-
-![AI Predictions](screenshots/ai-predictions.png)
-
----
-
-## Architecture
-
-The system is deployed on AWS EC2 in the Tokyo region with RDS MySQL, GitHub Actions CI/CD, IAM role authentication, SES alerts, CloudWatch monitoring, and Amazon Bedrock AI restock prediction.
-
-![Production Architecture](screenshots/Architecture.PNG)
-
----
-
-## Challenges & Solutions
-
-Real problems encountered and solved during development:
-
-**Bedrock inference profile**: Direct model IDs fail for cross-region inference in ap-northeast-1. Had to use the Japan inference profile ID (`jp.anthropic.claude-haiku-4-5-20251001-v1:0`) instead of the standard model string.
-
-**Bilingual AI predictions**: The Bedrock response was returning English even after switching the UI to Japanese. Root cause: language toggle was frontend-only (localStorage). Fixed by adding a `/set-lang/<lang>` Flask route that persists the language in server-side session, so Bedrock responses are fetched and displayed in the correct language.
-
-**CI/CD port 22 conflict**: GitHub Actions runners use dynamic Azure IPs, making IP allowlisting for SSH impractical. Solution: port 22 open to `0.0.0.0/0` at the security group level, hardened at the OS level (password auth disabled, key-pair only via `sshd_config`).
-
-**Gunicorn factory pattern**: `app = create_app()` inside `if __name__ == '__main__':` is not accessible to Gunicorn. Fixed by using the factory callable directly: `gunicorn "app:create_app()"`.
+**Gunicorn and the factory pattern.** `app = create_app()` inside `if __name__ == '__main__':` is invisible to Gunicorn. Fixed by passing the factory directly: `gunicorn "app:create_app()"`. Easy fix once located, but the error message did not point at this clearly.
 
 ---
 
 ## Database Schema
 
 ```
-products     -- id, name, sku, price, stock_quantity, minimum_stock_level, created_at, updated_at
-sales        -- id, product_id, quantity_sold, sale_date
-users        -- id, name, email, password_hash, role, created_at
-predictions  -- id, product_id, recommended_restock_qty, reasoning, reason_en, reason_ja, predicted_at
+products      id, name, sku, price, stock_quantity, minimum_stock_level, created_at, updated_at
+sales         id, product_id, quantity_sold, sale_date
+users         id, name, email, password_hash, role, created_at
+predictions   id, product_id, recommended_restock_qty, reasoning, reason_en, reason_ja, predicted_at
 ```
 
-**Stock status logic:**
+**Stock status (computed live, never stored):**
 
-- `OUT OF STOCK` -> `stock_quantity == 0`
-- `LOW STOCK` -> `stock_quantity <= minimum_stock_level`
-- `NORMAL` -> `stock_quantity > minimum_stock_level`
+- `OUT OF STOCK` → `stock_quantity == 0`
+- `LOW STOCK` → `stock_quantity <= minimum_stock_level`
+- `NORMAL` → `stock_quantity > minimum_stock_level`
 
-**Sale transaction flow:**
-
-1. Employee selects product and enters quantity
-2. System validates available stock
-3. If sufficient: sale record inserted + `stock_quantity` reduced atomically
-4. If insufficient: error returned, no changes made
-
----
-
-## Project Structure
+**Sale flow (atomic):**
 
 ```
-inventory-system/
-|-- .github/
-|   `-- workflows/
-|       `-- deploy.yml         # GitHub Actions CI/CD
-|-- database/
-|   |-- client.py              # DB abstraction layer (SQLite for local dev)
-|   |-- schema.sql             # MySQL schema (production)
-|   `-- schema_sqlite.sql      # SQLite schema (local dev)
-|-- logs/
-|   `-- predict.log            # Bedrock cron job output log
-|-- models/
-|   |-- product.py             # Product CRUD + stock status logic
-|   |-- sale.py                # Sale recording + stock deduction
-|   `-- user.py                # User lookup + password hashing
-|-- routes/
-|   |-- auth.py                # Login, logout, /set-lang/ route, @login_required
-|   |-- dashboard.py           # Dashboard stats + AI predictions
-|   |-- products.py            # Product CRUD routes
-|   `-- sales.py               # Sales record + history routes
-|-- scripts/
-|   |-- init_db.py             # DB initializer + admin user seed
-|   |-- import_csv.py          # Bulk CSV import (100 products, 240 sales)
-|   `-- predict.py             # Bedrock AI demand prediction (daily cron, bilingual)
-|-- static/
-|   |-- css/style.css
-|   `-- js/
-|       |-- app.js
-|       `-- i18n.js            # EN/JA language toggle (calls /set-lang/ route)
-|-- templates/
-|   |-- base.html              # AdminLTE shell (sidebar + navbar)
-|   |-- dashboard.html         # Dashboard with AI Restock Recommendations (bilingual)
-|   |-- login.html
-|   |-- products/              # list, add, edit templates
-|   `-- sales/                 # record, history templates
-|-- utils/
-|   `-- email_alerts.py        # SES low-stock alert helper
-|-- .env.example
-|-- .gitignore
-|-- app.py                     # Flask entry point (factory pattern)
-|-- config.py                  # Config reads from .env
-`-- requirements.txt
+1. Validate available stock
+2. INSERT sales row + UPDATE products.stock_quantity in one transaction
+3. If stock insufficient → reject, no changes made
+4. After commit → check threshold → SES alert if breached
 ```
 
 ---
 
-## Local Development Setup
+## Security
 
-### 1. Clone and create virtual environment
+- No AWS credentials in code or `.env`; EC2 uses IAM role `inventory-ec2-ses-role`
+- `.env` is gitignored
+- Passwords hashed with PBKDF2 (`werkzeug.security`)
+- All routes behind `@login_required`; writes additionally behind `@admin_required`
+- Demo account is read-only; admin UI hidden at template level and blocked at route level
+- Port 5000 not exposed externally; all traffic routed through Nginx on port 80
+- RDS port 3306 reachable only from the EC2 security group, never from the public internet
+- SSH key-pair only (password auth disabled in `sshd_config`)
+
+**Known gaps on the roadmap:**
+
+- HTTP only (HTTPS requires a custom domain, planned)
+- SSH port 22 open to `0.0.0.0/0` (tradeoff for GitHub Actions; self-hosted runner planned)
+
+---
+
+## Local Development
 
 ```bash
 git clone https://github.com/amanrai00/inventory-system.git
@@ -168,65 +198,37 @@ python -m venv venv
 
 # Windows
 .\venv\Scripts\Activate.ps1
-
 # macOS / Linux
 source venv/bin/activate
 
 pip install -r requirements.txt
-```
-
-### 2. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Default local config (SQLite, no MySQL setup needed):
-
-```
-DB_BACKEND=sqlite
-SQLITE_PATH=instance/inventory.db
-FLASK_DEBUG=1
-SECRET_KEY=replace_with_a_real_secret_key
-```
-
-### 3. Initialize the database
-
-```bash
+cp .env.example .env       # SQLite by default, no MySQL setup needed
 python scripts/init_db.py
+python app.py              # http://127.0.0.1:5000/login
 ```
 
-### 4. Run
-
-```bash
-python app.py
-# Open http://127.0.0.1:5000/login
-```
-
-**Default local login:** `admin@company.com` / `admin123` (seeded by `init_db.py`; change before any real use)
-**Live demo:** `demo@company.com` / `demo123` (read-only employee account)
+Local default login (seeded by `init_db.py`): `admin@company.com` / `admin123`. Change before any real use.
 
 ---
 
-## Production Deployment (AWS)
+## Production Deployment
 
 | Resource | Details |
-| --- | --- |
-| EC2 instance | `aman-inventory-prod`: Ubuntu 24, ap-northeast-1 (Tokyo) |
-| RDS engine | MySQL Community 8.4.8, db.t4g.micro, ap-northeast-1 (private; EC2 security group access only) |
-| WSGI server | Gunicorn (3 workers, factory pattern) |
-| Process manager | systemd (`inventory.service`): survives reboots |
-| Reverse proxy | Nginx: port 80 to Gunicorn port 5000 (internal only) |
-| IAM Role | `inventory-ec2-ses-role` (SES + CloudWatch + Bedrock) |
+|---|---|
+| EC2 | `aman-inventory-prod`, Ubuntu 24, ap-northeast-1 |
+| RDS | MySQL 8.4.8, `db.t4g.micro`, not publicly accessible |
+| WSGI | Gunicorn (3 workers, factory pattern) |
+| Process manager | systemd (`inventory.service`, auto-restart) |
+| Reverse proxy | Nginx port 80 to Gunicorn port 5000 |
+| IAM | `inventory-ec2-ses-role` (SES + CloudWatch + Bedrock) |
 
-GitHub Actions (`.github/workflows/deploy.yml`) automatically SSHs into EC2, pulls latest code, installs dependencies, and restarts the Flask service on every push to `main`.
+GitHub Actions (`.github/workflows/deploy.yml`) runs on every push to `main`: SSH into EC2, `git pull`, `pip install -r requirements.txt`, `systemctl restart inventory`.
 
----
-
-## Useful Commands (EC2)
+<details>
+<summary><b>Useful EC2 commands</b></summary>
 
 ```bash
-# App status and live logs
+# App status + live logs
 sudo systemctl status inventory
 journalctl -u inventory -f
 
@@ -240,7 +242,7 @@ tail -50 logs/predict.log
 # Nginx
 sudo nginx -t && sudo systemctl reload nginx
 
-# Test CloudWatch alarm manually
+# Test CloudWatch alarm
 aws cloudwatch set-alarm-state \
   --alarm-name "inventory-ec2-cpu-high" \
   --state-value ALARM \
@@ -248,43 +250,80 @@ aws cloudwatch set-alarm-state \
   --region ap-northeast-1
 ```
 
+</details>
+
 ---
 
-## Security
+## Project Structure
 
-- No AWS credentials hardcoded; EC2 authenticates via IAM role
-- `.env` is gitignored and never pushed to GitHub
-- Passwords hashed with PBKDF2 via `werkzeug.security`
-- All routes protected with `@login_required`; write operations additionally protected with `@admin_required`
-- Role-based access control: employee/demo accounts are read-only; admin UI hidden at template level and blocked at route level
-- Port 5000 not exposed externally; all traffic routed through Nginx on port 80
-- RDS security group restricts MySQL (port 3306) to EC2 security group only, no public access
-- SSH key-pair auth only (password authentication disabled in `sshd_config`); port 22 open to `0.0.0.0/0` to support GitHub Actions CI/CD runners, which use dynamic Azure IPs
+<details>
+<summary><b>Click to expand</b></summary>
+
+```
+inventory-system/
+├── .github/workflows/deploy.yml    # GitHub Actions CI/CD
+├── database/
+│   ├── client.py                   # DB abstraction (SQLite/MySQL)
+│   ├── schema.sql                  # MySQL schema
+│   └── schema_sqlite.sql           # SQLite schema
+├── models/
+│   ├── product.py                  # Product CRUD + stock status
+│   ├── sale.py                     # Sale recording + stock deduction
+│   └── user.py                     # User lookup + password hashing
+├── routes/
+│   ├── auth.py                     # Login, logout, /set-lang/<lang>
+│   ├── dashboard.py                # Stats + AI predictions
+│   ├── products.py
+│   └── sales.py
+├── scripts/
+│   ├── init_db.py                  # DB init + admin seed
+│   ├── import_csv.py               # Bulk import (100 products, 240 sales)
+│   └── predict.py                  # Bedrock AI prediction (daily cron, bilingual)
+├── static/
+│   ├── css/style.css
+│   └── js/i18n.js                  # EN/JA toggle (calls /set-lang/)
+├── templates/
+│   ├── base.html                   # AdminLTE shell
+│   ├── dashboard.html              # AI Restock Recommendations
+│   ├── products/
+│   └── sales/
+├── utils/email_alerts.py           # SES helper
+├── app.py                          # Flask entry (factory pattern)
+├── config.py                       # Reads from .env
+└── requirements.txt
+```
+
+</details>
 
 ---
 
 ## Roadmap
 
-- [x] Flask app: Application Factory + Blueprints
-- [x] SQLite (local) + MySQL (production) dual-backend support
-- [x] EC2 + RDS deployment: Tokyo region
-- [x] Nginx reverse proxy
-- [x] Gunicorn production WSGI server (3 workers)
-- [x] systemd process management (auto-restart on reboot)
-- [x] GitHub Actions CI/CD pipeline
-- [x] Amazon SES low-stock email alerts
-- [x] CloudWatch EC2 CPU alarm -> SNS email notification
-- [x] Amazon Bedrock AI demand prediction (daily cron, dashboard display)
-- [x] 100 products + 240 sales records imported via CSV
-- [x] Bilingual EN/JA UI: full language toggle via Flask session
-- [x] Bilingual Bedrock predictions (reason_en + reason_ja)
-- [x] Role-based access control (admin vs employee) + demo account
-- [ ] HTTPS / SSL certificate (Let's Encrypt, requires custom domain)
+**Done**
+
+- [x] Production deployment: EC2, RDS, Nginx, Gunicorn, systemd
+- [x] CI/CD pipeline: GitHub Actions auto-deploy on push to `main`
+- [x] AI features: Bedrock daily restock predictions, bilingual EN/JA reasoning
+- [x] Operations: SES low-stock alerts, CloudWatch CPU alarm → SNS
+- [x] Access control: role-based admin/employee, demo account, IAM role auth
+- [x] Architecture: Application Factory + Blueprints, dual-backend DB (SQLite/MySQL)
+- [x] Seed data: 100 products + 240 sales
+
+**Next**
+
+- [ ] Automated test suite (pytest, smoke + integration coverage)
+- [ ] HTTPS via Let's Encrypt + custom domain
+- [ ] Self-hosted GitHub Actions runner (private subnet SSH)
 - [ ] S3 product image uploads
-- [ ] Automated tests
 
 ---
 
-## License
+<div align="center">
 
-This project is built for portfolio and learning purposes.
+### Built by [Aman Rai](https://www.linkedin.com/in/amanrai00) · Tokyo
+
+**AWS Certified Cloud Practitioner (CLF-C02)** · Studying for SAA-C03 · Building toward Cloud Engineer roles
+
+[LinkedIn](https://www.linkedin.com/in/amanrai00) · [GitHub](https://github.com/amanrai00) · [AWS Badge](https://www.credly.com/badges/095a2b8e-c94f-4af6-b77c-51ec2fa64d56)
+
+</div>
